@@ -1,4 +1,5 @@
-package sqlite_examples; /**
+package sqlite_examples;
+/**
  * Created by Darren on 23/01/2017.
  */
 import java.sql.*;
