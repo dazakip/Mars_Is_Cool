@@ -14,7 +14,7 @@ public class DELETE_op
             System.out.println("Opened database successfully");
 
             stmt = c.createStatement();
-            String sql = "DELETE from COMPANY where ID=2;";
+            String sql = "DELETE from LOCATIONS where ID=2;";
             stmt.executeUpdate(sql);
             c.commit();
 

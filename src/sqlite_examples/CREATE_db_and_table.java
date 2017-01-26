@@ -8,17 +8,18 @@ public class CREATE_db_and_table
 {
     public static void main( String args[] )
     {
-        /* ************************************************************************** CREATE A DATABASE
+      /************************************************************************** CREATE A DATABASE
         Connection c = null;
         try {
             Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:test.db");
+            c = DriverManager.getConnection("jdbc:sqlite:cur_loc.db");
         } catch ( Exception e ) {
             System.err.println( e.getClass().getName() + ": " + e.getMessage() );
             System.exit(0);
         }
         System.out.println("Opened database successfully");
-        **********************************************************************/
+*/
+
 
         //***************************************************************************** CREATE TABLE
 
@@ -26,16 +27,17 @@ public class CREATE_db_and_table
         Statement stmt = null;
         try {
             Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:test.db");
+            c = DriverManager.getConnection("jdbc:sqlite:cur_loc.db");
             System.out.println("Opened database successfully");
 
             stmt = c.createStatement();
-            String sql = "CREATE TABLE COMPANY " +
-                    "(ID INT PRIMARY KEY     NOT NULL," +
-                    " NAME           TEXT    NOT NULL, " +
-                    " AGE            INT     NOT NULL, " +
-                    " ADDRESS        CHAR(50), " +
-                    " SALARY         REAL)";
+            String sql = "CREATE TABLE LOCATIONS " +
+                    "(ARRIV   DATETIME     NOT NULL," +
+                    " SITE      INT                 NOT NULL, " +
+                    " LONG      FLOAT               NOT NULL, " +
+                    " LAT       FLOAT               NOT NULL, " +
+                    " STARTSOL  INT                 NOT NULL," +
+                    " ENDSOL    INT                 NOT NULL)";
             stmt.executeUpdate(sql);
             stmt.close();
             c.close();
@@ -44,7 +46,7 @@ public class CREATE_db_and_table
             System.exit(0);
         }
         System.out.println("Table created successfully");
-        //*/
+
 
     }
 }

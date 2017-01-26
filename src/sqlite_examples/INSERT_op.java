@@ -11,27 +11,18 @@ public class INSERT_op {
         Statement stmt = null;
         try {
             Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:test.db");
+            c = DriverManager.getConnection("jdbc:sqlite:cur_loc.db");
             c.setAutoCommit(false);
             System.out.println("Opened database successfully");
 
+
             stmt = c.createStatement();
-            String sql = "INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) " +
-                    "VALUES (1, 'Paul', 32, 'California', 20000.00 );";
-            stmt.executeUpdate(sql);
+            //String sql = "INSERT INTO LOCATIONS (ARRIV,SITE,LONG,LAT,STARTSOL,ENDSOL) " +
+              //      "VALUES ('2008-11-11 13:23:44',1,1,1,1,1)";
 
-            sql = "INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) " +
-                    "VALUES (2, 'Allen', 25, 'Texas', 15000.00 );";
+            String sql = "DELETE from LOCATIONS where SITE=0;";
             stmt.executeUpdate(sql);
-
-            sql = "INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) " +
-                    "VALUES (3, 'Teddy', 23, 'Norway', 20000.00 );";
             stmt.executeUpdate(sql);
-
-            sql = "INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY) " +
-                    "VALUES (4, 'Mark', 25, 'Rich-Mond ', 65000.00 );";
-            stmt.executeUpdate(sql);
-
             stmt.close();
             c.commit();
             c.close();
