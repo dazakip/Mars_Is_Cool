@@ -1,5 +1,12 @@
  var mapTypes = {};
  
+ var circleO ={
+    path: google.maps.SymbolPath.CIRCLE,
+    fillColor: 'red',
+    fillOpacity: .4,
+    scale: 1
+};
+ 
     // set up the map types
     mapTypes['mars_elevation'] = {
       getTileUrl: function(coord, zoom) {
@@ -120,10 +127,9 @@
       }
  
       var mapOptions = {
-        zoom: 9,
+        zoom: 10,
 		streetViewControl: false,
 		fullscreenControl: false,
-		minZoom: 0,
         center: new google.maps.LatLng(-4.5894669521344875,137.4416334989196),
         mapTypeControlOptions: {
           mapTypeIds: mapTypeIds,
@@ -148,20 +154,16 @@
       // start with the mars_visible map type
       map.setMapTypeId('mars_visible');
 	  
-	    var circleO ={
-    path: google.maps.SymbolPath.CIRCLE,
-    fillColor: 'red',
-    fillOpacity: .4,
-    scale: 4.5,
-    strokeColor: 'white',
-    strokeWeight: 1
-};
-
-        var marker = new google.maps.Marker({
-          position: map.getCenter(),
-          icon: circleO,
-          map: map
-        });
+	    
+	//addMarker();
 	  
     }
- 
+	
+	
+	function addMarker(lati, longi) {
+		var marker = new google.maps.Marker({
+          position: {lat: lati, lng: longi},
+          icon: circleO,
+          map: map
+     });
+	}
