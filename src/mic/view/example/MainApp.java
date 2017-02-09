@@ -1,74 +1,80 @@
 package mic.view.example;
 
-import java.io.IOException;
-
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
+import javafx.event.EventHandler;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.BorderPane;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.text.View;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
+
+import static javafx.scene.input.KeyCode.R;
 
 public class MainApp extends Application {
 
-    private Stage primaryStage;
-    private BorderPane rootLayout;
-
-    @Override
-    public void start(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-        this.primaryStage.setTitle("AddressApp");
-
-        initRootLayout();
-
-        showPersonOverview();
-    }
-
-    /**
-     * Initializes the root layout.
-     */
-    public void initRootLayout() {
-        try {
-            // Load root layout from fxml file.
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MainApp.class.getResource("example/RootLayout.fxml"));
-            rootLayout = (BorderPane) loader.load();
-
-            // Show the scene containing the root layout.
-            Scene scene = new Scene(rootLayout);
-            primaryStage.setScene(scene);
-            primaryStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Shows the person overview inside the root layout.
-     */
-    public void showPersonOverview() {
-        try {
-            // Load person overview.
-            FXMLLoader loader = new FXMLLoader();
-            loader.setLocation(MainApp.class.getResource("example/PersonOverview.fxml"));
-            AnchorPane personOverview = (AnchorPane) loader.load();
-
-            // Set person overview into the center of root layout.
-            rootLayout.setCenter(personOverview);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Returns the main stage.
-     * @return
-     */
-    public Stage getPrimaryStage() {
-        return primaryStage;
-    }
-
+    int picNo = 0;
     public static void main(String[] args) {
-        launch(args);
+        Application.launch(args);
     }
+    @Override
+    public void start(Stage primaryStage) throws InterruptedException {
+        ArrayList<String> lol = new ArrayList<String>();
+        final FileNameExtensionFilter extensionFilter = new FileNameExtensionFilter("N/A", "jpg");//, whatever other extensions you want);
+        File file = new File("C:\\Users\\Dazak\\Desktop\\imgs");
+        for(final File child : file.listFiles()) {
+            File file2 = new File(child.getAbsolutePath());
+            for(final File child2 : file2.listFiles()) {
+                if (extensionFilter.accept(child2)) {
+                    lol.add("file:" + child2.getAbsolutePath());
+                        /*
+                        System.out.println(child2.getAbsolutePath());
+                        Image g = new Image("file:" + child2.getAbsolutePath());
+                        imgView.setImage(g);
+                        */
+                }
+            }
+        }
+
+
+        primaryStage.setTitle("Load Image");
+
+        StackPane sp = new StackPane();
+        Image img = new Image("file:C:\\Users\\Dazak\\Desktop\\imgs\\1\\14.jpg");
+        ImageView imgView = new ImageView(img);
+
+        imgView.setOnMouseClicked(new EventHandler<MouseEvent>()
+        {
+            @Override
+            public void handle(MouseEvent t) {
+                Image g = new Image(lol.get(picNo));
+                imgView.setImage(g);
+                picNo++;
+            }
+        });
+
+
+        sp.getChildren().add(imgView);
+
+        //Adding HBox to the scene
+        Scene scene = new Scene(sp);
+        primaryStage.setScene(scene);
+        primaryStage.show();
+
+        /*
+        Image g = new Image("file:C:\\Users\\Dazak\\Desktop\\imgs\\1\\10.jpg");
+        imgView.setImage(g);
+        */
+
+
+
+
+    }
+
 }

@@ -29,7 +29,6 @@ public class browserEx extends Application {
     @Override public void start(Stage stage) {
         // create the scene
         stage.setTitle("Web View");
-        Browser bro = new Browser();
         scene = new Scene(new Browser(),750,500, Color.web("#666970"));
         stage.setScene(scene);
         //scene.getStylesheets().add("webviewsample/BrowserToolbar.css");
@@ -48,6 +47,7 @@ class Browser extends Region {
     final WebEngine webEngine = browser.getEngine();
 
     public Browser() {
+        /*
         //wait till webengine loads before executing script
         webEngine.getLoadWorker().stateProperty().addListener(
                 new ChangeListener<Worker.State>() {
@@ -84,6 +84,7 @@ class Browser extends Region {
                         }
                     }
                 });
+                */
 
         //apply the styles
         getStyleClass().add("browser");
