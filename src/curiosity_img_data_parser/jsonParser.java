@@ -22,6 +22,7 @@ public class jsonParser {
 
     /**
      * FHAZ_RIGHT_B     - Front Hazcam: Right B
+     * FHAZ_RIGHT_A     - Front Hazcam: Right A
      * FHAZ_LEFT_B      - Front Hazcam: Left B
      * RHAZ_RIGHT_B     - Rear Hazcam: Right B
      * RHAZ_LEFT_B      - Rear Hazcam: Left B
@@ -33,7 +34,7 @@ public class jsonParser {
      * MAST_LEFT        - Mastcam: Left
      * MAST_RIGHT       - Mastcam: Right
      **/
-    String CAMERA = "MAHLI";
+    String CAMERA = "RHAZ_LEFT_A";
 
     /**
      * full - hazcams, chemcam, MARDI
@@ -70,7 +71,6 @@ public class jsonParser {
         //solsArr.length()
         for (int i = 0; i < 100; i++) {
 
-            System.out.println("Sol: " + i);
             JSONObject sol = solsArr.getJSONObject(i);
 
             // go into each sol individually and scrape some images from
@@ -106,8 +106,12 @@ public class jsonParser {
             JSONObject imageX = solXIMGS.getJSONObject(j);
 
             //grab image from this sol if these values hold true
-            if (imageX.getString("instrument").equals(CAMERA) &&
-                    imageX.getString("sampleType").equals(SAMPLETYPE)) {
+            // || imageX.getString("sampleType").equals("subframe")
+            if ((imageX.getString("instrument").equals(CAMERA) ||
+                    imageX.getString("instrument").equals("RHAZ_LEFT_B") ||
+                    imageX.getString("instrument").equals("RHAZ_RIGHT_A") ||
+                    imageX.getString("instrument").equals("RHAZ_RIGHT_B"))&&
+                imageX.getString("sampleType").equals(SAMPLETYPE)   ) {
 
                 //save the image to folder
                 saveImage(imageX.getString("urlList"), Integer.toString(solDay));
@@ -132,6 +136,9 @@ public class jsonParser {
         out.close();
         in.close();
         byte[] response = out.toByteArray();
+
+
+        System.out.println("Sol: " + sol);
 
         FileOutputStream fos = new FileOutputStream("E:\\mars_imgs\\"+ CAMERA +"\\" + sol +".jpg");
         fos.write(response);
