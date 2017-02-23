@@ -1,4 +1,3 @@
-package mic.view.example;
 
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -17,17 +16,18 @@ import java.util.concurrent.TimeUnit;
 
 import static javafx.scene.input.KeyCode.R;
 
-public class MainApp extends Application {
+public class imgViewerv1 extends Application {
 
     int picNo = 0;
     public static void main(String[] args) {
         Application.launch(args);
     }
+
     @Override
     public void start(Stage primaryStage) throws InterruptedException {
         ArrayList<String> lol = new ArrayList<String>();
         final FileNameExtensionFilter extensionFilter = new FileNameExtensionFilter("N/A", "jpg");//, whatever other extensions you want);
-        File file = new File("C:\\Users\\Dazak\\Desktop\\imgs");
+        File file = new File("C:\\Users\\Darren\\Desktop\\imgs");
         for(final File child : file.listFiles()) {
             File file2 = new File(child.getAbsolutePath());
             for(final File child2 : file2.listFiles()) {
@@ -46,7 +46,7 @@ public class MainApp extends Application {
         primaryStage.setTitle("Load Image");
 
         StackPane sp = new StackPane();
-        Image img = new Image("file:C:\\Users\\Dazak\\Desktop\\imgs\\1\\14.jpg");
+        Image img = new Image("file:C:\\Users\\Darren\\Desktop\\imgs\\1\\14.jpg");
         ImageView imgView = new ImageView(img);
 
         imgView.setOnMouseClicked(new EventHandler<MouseEvent>()
@@ -68,7 +68,7 @@ public class MainApp extends Application {
         primaryStage.show();
 
         /*
-        Image g = new Image("file:C:\\Users\\Dazak\\Desktop\\imgs\\1\\10.jpg");
+        Image g = new Image("file:C:\\Users\\Darren\\Desktop\\imgs\\1\\10.jpg");
         imgView.setImage(g);
         */
 

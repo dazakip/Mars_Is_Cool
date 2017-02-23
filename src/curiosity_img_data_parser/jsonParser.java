@@ -19,6 +19,36 @@ import java.util.Scanner;
  * Created by Dazak on 08/02/2017.
  */
 public class jsonParser {
+
+    /**
+     * FHAZ_RIGHT_B     - Front Hazcam: Right B
+     * FHAZ_LEFT_B      - Front Hazcam: Left B
+     * RHAZ_RIGHT_B     - Rear Hazcam: Right B
+     * RHAZ_LEFT_B      - Rear Hazcam: Left B
+     * NAV_LEFT_B       - Navcam: Left B
+     * NAV_RIGHT_B      - Navcam: Right B
+     * CHEMCAM_RMI      - ChemCam: Remote Micro-Imager
+     * MARDI            - Mars Descent Imager
+     * MAHLI            - Mars Hand Lens Imager
+     * MAST_LEFT        - Mastcam: Left
+     * MAST_RIGHT       - Mastcam: Right
+     **/
+    String CAMERA = "MAHLI";
+
+    /**
+     * full - hazcams, chemcam, MARDI
+     * subframe - some hazcams, mast, mahli
+     * thumb - all
+     */
+    String SAMPLETYPE = "full";
+
+    /**
+     * -23 equals a decent shot at the horizon
+     * -50 equals looking at the ground
+     */
+    int MAST_EL = 0;
+
+
     public void run() throws IOException {
 
         // build a URL
@@ -33,7 +63,7 @@ public class jsonParser {
 
         // build a JSON object
         JSONObject obj = new JSONObject(str);
-        //get array of sols
+        //get image_manifest json
         JSONArray solsArr = obj.getJSONArray("sols");
 
         //loop through each sol for images from that day
@@ -43,11 +73,15 @@ public class jsonParser {
             System.out.println("Sol: " + i);
             JSONObject sol = solsArr.getJSONObject(i);
 
+            // go into each sol individually and scrape some images from
             readSolImgs(sol.getString("catalog_url"), i);
         }
     }
 
+    // the method that reads the json file for each sol
+    // grabs images based on criteria that can be changed in variables
     private void readSolImgs(String catlogurl, int solDay) throws IOException {
+
 
 
         URL url = new URL(catlogurl); //get link to json with images
@@ -70,13 +104,14 @@ public class jsonParser {
         for (int j = 0; j < solXIMGS.length(); j++) {
             //System.out.println("ImgNum: " + j);
             JSONObject imageX = solXIMGS.getJSONObject(j);
-            if (imageX.getString("instrument").equals("NAV_LEFT_A") &&
-                    imageX.getString("sampleType").equals("full")) {
 
-                System.out.println("-ImgNum: " + j);
-                System.out.println("-Intrument: " + imageX.getString("instrument") + "Type: " + imageX.getString("sampleType"));
+            //grab image from this sol if these values hold true
+            if (imageX.getString("instrument").equals(CAMERA) &&
+                    imageX.getString("sampleType").equals(SAMPLETYPE)) {
 
-                saveImage(imageX.getString("urlList"), Integer.toString(j), Integer.toString(solDay));
+                //save the image to folder
+                saveImage(imageX.getString("urlList"), Integer.toString(solDay));
+                break;
             }
 
 
@@ -84,7 +119,7 @@ public class jsonParser {
 
     }
 
-    private void saveImage(String imageUrl, String destinationFile, String sol) throws IOException {
+    private void saveImage(String imageUrl, String sol) throws IOException {
         URL url = new URL(imageUrl);
         InputStream in = new BufferedInputStream(url.openStream());
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -98,8 +133,7 @@ public class jsonParser {
         in.close();
         byte[] response = out.toByteArray();
 
-        new File("C:\\Users\\Dazak\\Desktop\\imgs\\" + sol).mkdir();
-        FileOutputStream fos = new FileOutputStream("C:\\Users\\Dazak\\Desktop\\imgs\\" + sol + "\\" + destinationFile + ".jpg");
+        FileOutputStream fos = new FileOutputStream("E:\\mars_imgs\\"+ CAMERA +"\\" + sol +".jpg");
         fos.write(response);
         fos.close();
     }
