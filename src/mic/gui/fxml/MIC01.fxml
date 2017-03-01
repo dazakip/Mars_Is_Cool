@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.web.WebView?>
+
+<AnchorPane maxHeight="1080.0" maxWidth="1920.0" minHeight="1080.0" minWidth="1920.0" prefHeight="1080.0" prefWidth="1920.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="mic.gui.ExController">
+   <children>
+      <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="956.0" prefWidth="1920.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="480.0" minWidth="480.0" prefWidth="480.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="480.0" minWidth="480.0" prefWidth="480.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="480.0" minWidth="10.0" prefWidth="480.0" />
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="480.0" minWidth="480.0" prefWidth="480.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="480.0" minHeight="480.0" prefHeight="480.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="480.0" minHeight="480.0" prefHeight="480.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <ImageView fx:id="LEFTHAZ" fitHeight="480.0" fitWidth="480.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="FRONTHAZ" fitHeight="480.0" fitWidth="480.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" />
+            <ImageView fx:id="RIGHTHAZ" fitHeight="480.0" fitWidth="480.0" layoutX="10.0" layoutY="490.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" />
+            <ImageView fx:id="REARHAZ" fitHeight="480.0" fitWidth="480.0" layoutX="490.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <ImageView fx:id="MAHLI" fitHeight="480.0" fitWidth="480.0" layoutX="490.0" layoutY="490.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="2" />
+            <ImageView fx:id="MAST" fitHeight="480.0" fitWidth="480.0" layoutX="970.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="3" />
+            <WebView fx:id="map" maxHeight="480.0" maxWidth="480.0" minHeight="480.0" minWidth="480.0" prefHeight="480.0" prefWidth="480.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+            <Pane prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+               <children>
+                  <Label fx:id="numSol" layoutX="34.0" layoutY="22.0" prefHeight="47.0" prefWidth="192.0" text="Sol: 0">
+                     <font>
+                        <Font name="Comic Sans MS" size="35.0" />
+                     </font>
+                  </Label>
+               </children>
+            </Pane>
+         </children>
+      </GridPane>
+      <Pane layoutY="960.0" prefHeight="120.0" prefWidth="1920.0">
+         <children>
+            <Slider fx:id="solSlider" blockIncrement="100.0" layoutX="14.0" layoutY="25.0" majorTickUnit="50.0" max="1589.0" maxHeight="35.0" minHeight="35.0" minorTickCount="5" prefHeight="35.0" prefWidth="1892.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" />
+         </children>
+      </Pane>
+   </children>
+</AnchorPane>

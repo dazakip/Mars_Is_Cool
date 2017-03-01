@@ -1,4 +1,4 @@
-package curiosity_img_data_parser;
+package parser;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;

@@ -1,15 +1,7 @@
-package mic.view;
+package old_map_stuff;
 
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Worker;
-import javafx.geometry.HPos;
-import javafx.geometry.VPos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
@@ -17,11 +9,6 @@ import javafx.scene.web.WebView;
 import javafx.stage.Stage;
 
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.concurrent.TimeUnit;
 
 //CLASS THAT RUNS BROWSER CLASS
 public class browserEx extends Application {
@@ -92,31 +79,12 @@ class Browser extends Region {
         URL url = getClass().getResource("openlayers.html");
         browser.getEngine().load(url.toExternalForm());
 
-        //add the web view to the scene
+        //add the web old_map_stuff to the scene
         getChildren().add(browser);
         // load the web page
         webEngine.load(url.toExternalForm());
 
 
 
-    }
-    private Node createSpacer() {
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-        return spacer;
-    }
-
-    @Override protected void layoutChildren() {
-        double w = getWidth();
-        double h = getHeight();
-        layoutInArea(browser,0,0,w,h,0, HPos.CENTER, VPos.CENTER);
-    }
-
-    @Override protected double computePrefWidth(double height) {
-        return 1000;
-    }
-
-    @Override protected double computePrefHeight(double width) {
-        return 500;
     }
 }

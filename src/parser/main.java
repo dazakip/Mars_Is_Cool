@@ -1,14 +1,8 @@
-package curiosity_img_data_parser;
-import org.json.JSONArray;
-import org.json.JSONObject;
+package parser;
 import org.xml.sax.SAXException;
 
-import javax.imageio.ImageIO;
 import javax.xml.parsers.ParserConfigurationException;
-import java.awt.*;
 import java.io.IOException;
-import java.net.URL;
-import java.util.Scanner;
 
 /**
  * Created by Darren on 25/01/2017.

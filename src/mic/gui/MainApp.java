@@ -1,4 +1,4 @@
-package example;
+package mic.gui;
 
 import java.io.IOException;
 
@@ -51,7 +51,7 @@ public class MainApp extends Application {
 		try {
 			// Load person overview.
 			FXMLLoader loader = new FXMLLoader();
-			loader.setLocation(MainApp.class.getResource("fxml/PersonOverview.fxml"));
+			loader.setLocation(MainApp.class.getResource("fxml/MIC01.fxml"));
 			AnchorPane personOverview = (AnchorPane) loader.load();
 
 			// Set person overview into the center of root layout.

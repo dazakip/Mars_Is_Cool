@@ -1,18 +1,12 @@
-package curiosity_img_data_parser;
+package parser;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
 import java.io.*;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Scanner;
 
 /**
