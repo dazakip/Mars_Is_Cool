@@ -27,17 +27,15 @@ public class CREATE_db_and_table
         Statement stmt = null;
         try {
             Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:cur_loc.db");
+            c = DriverManager.getConnection("jdbc:sqlite:elevationData.db");
             System.out.println("Opened database successfully");
 
             stmt = c.createStatement();
-            String sql = "CREATE TABLE LOCATIONS " +
-                    "(ARRIV   DATETIME     NOT NULL," +
-                    " SITE      INT                 NOT NULL, " +
-                    " LONG      FLOAT               NOT NULL, " +
-                    " LAT       FLOAT               NOT NULL, " +
-                    " STARTSOL  INT                 NOT NULL," +
-                    " ENDSOL    INT                 NOT NULL)";
+            String sql = "CREATE TABLE ELEVATION " +
+                    "(TIMESTAMP TIMESTAMP         NOT NULL," +
+                    " SOL       INT         NOT NULL, " +
+                    " TIME      TIME        NOT NULL, " +
+                    " ELEVATION FLOAT       NOT NULL)";
             stmt.executeUpdate(sql);
             stmt.close();
             c.close();

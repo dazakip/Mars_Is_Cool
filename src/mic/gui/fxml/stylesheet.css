@@ -1,0 +1,15 @@
+.camLabel {
+	-fx-background-color: black;
+	-fx-padding: -2 2 -2 2;
+	-fx-font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+	-fx-font-size: 15px;
+	-fx-text-fill: white;
+}
+
+.mainCamLabel {
+	-fx-background-color: black;
+	-fx-padding: -2 5 -2 5;
+	-fx-font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+	-fx-font-size: 24px;
+	-fx-text-fill: white;
+}

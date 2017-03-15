@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>mars is wicked cool</title>
+		<meta http-equiv="imagetoolbar" content="no"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<style type="text/css">
+			html, body { margin:0; padding: 0; height: 100%; width: 100%; }
+			body { width:100%; height:100%; background: #ffffff; }
+			#map { position: absolute; height: 100%; width: 100%; background-color: #FFFFFF; }
+			.ol-mouse-position {
+			  background-color: rgba(255, 255, 255, 0.7);
+			  box-shadow: 0 0 5px #bbb;
+			  padding: 0 5px;
+			  margin:0;
+			  color: #333;
+			  font: 11px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+			}
+		</style><link rel="stylesheet" href="https://openlayers.org/en/v4.0.1/css/ol.css" type="text/css">
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="https://openlayers.org/en/v4.0.1/build/ol.js"></script>
+		<script type="text/javascript" src="curiositypath.js"></script>
+	</head>
+	<body>
+		<div id="map"></div>
+		<script type="text/javascript">
+			//following block of code makes map actually appear in JavaFX WebView 
+			//https://stackoverflow.com/questions/40483446/openlayers-v3-19-1-doesnt-show-in-javafx-webview/40485118#40485118
+			/****************************************************/
+			window.requestAnimFrame = (function(){
+				return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				window.oRequestAnimationFrame ||
+				window.msRequestAnimationFrame ||
+				function(callback, element) {
+					window.setTimeout(callback, 1000 / 60);
+				};
+			})();
+			var requestAnimationFrame = window.requestAnimFrame;
+			/****************************************************/
+			
+			//setting the extent/projection of the map
+			var extent = [137.094719, -5.249559, 137.853827, -4.068583];
+			var projection = new ol.proj.Projection({
+				code: 'HiRise',
+				units: 'pixels',
+				extent: extent
+			});
+			
+			//setting up layer for gale crater image
+			var imageLayer =  new ol.layer.Image({
+				source: new ol.source.ImageStatic({
+					attributions: '© <a href="https://astrogeology.usgs.gov/search/map/Mars/MarsScienceLaboratory/Mosaics/MSL_Gale_Orthophoto_Mosaic_10m_v3">USGS</a>',
+					url: 'mic.jpg',
+					projection: projection,
+					imageExtent: extent
+				})
+			})
+			
+			//getting location data of rover from external geojson file
+			var geojsonObject = data;
+					
+			//setting up layer that displays the the full rover line
+			var fullRoverPath = new ol.layer.Vector({
+				source: new ol.source.Vector({
+					features: (new ol.format.GeoJSON()).readFeatures(geojsonObject)
+				}),
+				style: new ol.style.Style({
+							stroke: new ol.style.Stroke({
+								color: 'yellow',
+								width: 1
+							})
+						})
+			});
+			
+			var view = new ol.View({
+				projection: projection,
+				center: [137.44442539100467, -4.59182358630241],
+				zoom: 5,
+				minZoom: 3,
+				maxZoom: 7
+			});
+
+			//setting up actual map with image and full rover layer
+			var map = new ol.Map({
+				layers: [ imageLayer, fullRoverPath],
+				target: 'map',
+				view: view
+			});
+			
+			//add control that shows the coordinate that the mouse is pointed at
+			map.addControl(new ol.control.MousePosition());
+			var currentRoverPath;
+			
+			/*	function to display a vector layer on top of the fullRoverPath
+			**	with where it is currently on it's route
+			*/
+			function highlightPath(currentSol) {
+			
+				map.removeLayer(currentRoverPath); //remove old vector layer from map
+			
+				//creating layer that shows what rover has travelled so far
+				currentRoverPath = new ol.layer.Vector({
+					source: new ol.source.Vector({
+						features: (new ol.format.GeoJSON()).readFeatures(geojsonObject)
+					}),
+					style: function(feature, res){
+						// for all sols so far, add their lines to the single vector layer
+						for (i = 0; i <= currentSol; i++) { 
+							if(feature.get("name") == i){
+								return new ol.style.Style({
+									stroke: new ol.style.Stroke({
+										color: 'red',
+										width: 2
+									})
+								});
+							}
+						}
+					}});
+				
+				map.addLayer(currentRoverPath);	//add back to map
+			}
+			
+			function panToCuriosity(){
+				view.animate({center: [137.44442539100467, -4.59182358630241]},{zoom: 6},{duration: 250});
+			}
+			
+			// test to add marker to map from JavaFX
+			function addMarker() {
+
+				var iconFeature = new ol.Feature({
+				  geometry: new ol.geom.Point([137.44442539100467, -4.59182358630241]),
+				  name: 'Null Island',
+				  population: 4000,
+				  rainfall: 500
+				});
+
+				var vectorSource = new ol.source.Vector({
+				  features: [iconFeature] //add an array of features
+				});
+				
+				var vectorLayer = new ol.layer.Vector({
+				  source: vectorSource
+				});
+				
+				map.addLayer(vectorLayer);
+			}
+		</script>
+	</body>
+</html>
