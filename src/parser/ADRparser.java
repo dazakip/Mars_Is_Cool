@@ -19,16 +19,29 @@ import java.util.TimeZone;
 /**
  * Created by Dazak on 14/03/2017.
  */
-public class remsParser {
+public class ADRparser {
 
     int currentTime;
     Connection c = null;
     Statement stmt = null;
 
-    public remsParser() throws ClassNotFoundException, SQLException {
+    public ADRparser() throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
-        c = DriverManager.getConnection("jdbc:sqlite:elevationData.db");
+        c = DriverManager.getConnection("jdbc:sqlite:elevationData2.db");
+
+        Statement stmt = null;
+        stmt = c.createStatement();
         c.setAutoCommit(false);
+        String sql = "CREATE TABLE ELEVATION " +
+                "(STAMP         TIMESTAMP   NOT NULL," +
+                " SOL           INT         NOT NULL, " +
+                " TIME          TIME        NOT NULL, " +
+                " ELEVATION     DOUBLE"+
+                ");";
+        stmt.executeUpdate(sql);
+        c.commit();
+
+
     }
 
 
@@ -42,10 +55,10 @@ public class remsParser {
                 currentTime = Integer.parseInt(firstLine[0].substring(1, firstLine[0].length()));
                 System.out.println(currentTime);
                 String line;
-                while ((line = br.readLine()) != null) {
+                line = br.readLine();
                     String segments[] = line.split(",");
                     dealWithLine(segments);
-                }
+
             }
         }
 
@@ -59,26 +72,23 @@ public class remsParser {
 
         String timeVal = line[0].substring(1, line[0].length());
         int timeInt = Integer.parseInt(timeVal);
-        if (timeInt >= (currentTime+1800)) {
 
-            int sol = Integer.parseInt(line[2].substring(1,6).replaceFirst("^0+(?!$)", ""));
-            String time = line[2].substring(7,15);
-            System.out.println(time);
-            String roverZVal = line[7];
-            System.out.println(timeVal+" - " + roverZVal);
-            currentTime = timeInt;
-            finalValues(timeInt, roverZVal, sol, time);
-        }
-
-        //System.out.println(timeVal);
+        int sol = Integer.parseInt(line[2].substring(1,6).replaceFirst("^0+(?!$)", ""));
+        String time = line[2].substring(7,15);
+        System.out.println(time);
+        String roverZVal = line[7];
+        System.out.println(timeVal+" - " + roverZVal);
+        currentTime = timeInt;
+        finalValues(timeInt, roverZVal, sol, time);
     }
 
     private void finalValues(int timestamp,  String elevation, int sol, String time){
         try {
-
+            System.out.println("String - "+elevation);
+            System.out.println("Double - "+Double.parseDouble(elevation));
             stmt = c.createStatement();
-                String sql = "INSERT INTO ELEVATION (TIMESTAMP, SOL, TIME, ELEVATION) " +
-                        "VALUES ('" + timestamp + "'," + sol + ",'" + time + "'," + Float.parseFloat(elevation) + ");";
+                String sql = "INSERT INTO ELEVATION (STAMP, SOL, TIME, ELEVATION) " +
+                        "VALUES ('" + timestamp + "'," + sol + ",'" + time + "'," + Double.parseDouble(elevation) + ");";
                 stmt.executeUpdate(sql);
 
 

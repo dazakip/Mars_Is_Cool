@@ -32,10 +32,15 @@ public class CREATE_db_and_table
 
             stmt = c.createStatement();
             String sql = "CREATE TABLE ELEVATION " +
-                    "(TIMESTAMP TIMESTAMP         NOT NULL," +
-                    " SOL       INT         NOT NULL, " +
-                    " TIME      TIME        NOT NULL, " +
-                    " ELEVATION FLOAT       NOT NULL)";
+                    "(STAMP         TIMESTAMP   NOT NULL," +
+                    " SOL           INT         NOT NULL, " +
+                    " TIME          TIME        NOT NULL, " +
+                    " ELEVATION     DOUBLE"+
+                    " AIRTEMP     DOUBLE"+
+                    " UVA     DOUBLE"+
+                    " PRESSURE     DOUBLE"+
+                    " HUMIDITY     DOUBLE"+
+                    ");";
             stmt.executeUpdate(sql);
             stmt.close();
             c.close();

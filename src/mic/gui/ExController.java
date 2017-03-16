@@ -20,6 +20,7 @@ import javafx.scene.web.WebView;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView ;
+import mic.model.ImageLocations;
 
 import static javafx.application.Platform.runLater;
 

@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.web.WebView?>
 
@@ -113,7 +114,7 @@
                   <Label styleClass="camLabel" stylesheets="@stylesheet.css" text="MAST" GridPane.valignment="TOP" />
                   <Label layoutX="10.0" layoutY="10.0" styleClass="camLabel" stylesheets="@stylesheet.css" text="Front Hazcam" GridPane.columnIndex="1" GridPane.valignment="TOP" />
                   <Label layoutX="10.0" layoutY="82.0" styleClass="camLabel" text="MARDI" GridPane.rowIndex="2" GridPane.valignment="TOP" />
-                  <Label layoutX="10.0" layoutY="82.0" styleClass="camLabel" text="Right Hacam" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.valignment="TOP" />
+                  <Label layoutX="10.0" layoutY="82.0" styleClass="camLabel" text="Right Hazam" GridPane.columnIndex="2" GridPane.rowIndex="1" GridPane.valignment="TOP" />
                   <Label layoutX="10.0" layoutY="82.0" styleClass="camLabel" text="Curated View" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="TOP" />
                   <Label layoutX="10.0" layoutY="82.0" styleClass="camLabel" text="Left Hazcam" GridPane.rowIndex="1" GridPane.valignment="TOP" />
                   <Label layoutX="10.0" layoutY="82.0" styleClass="camLabel" text="MAHLI" GridPane.columnIndex="2" GridPane.valignment="TOP" />
@@ -134,11 +135,11 @@
          </image>
       </ImageView>
       <Label fx:id="mainView" styleClass="mainCamLabel" text="Main View" />
-      <ButtonBar layoutX="397.0" layoutY="679.0" prefHeight="2.0" prefWidth="164.0">
+      <ButtonBar layoutX="400.0" layoutY="689.0" prefHeight="2.0" prefWidth="164.0">
          <buttons>
             <Button fx:id="backwardStep" maxHeight="50.0" maxWidth="160.0" minHeight="17.0" minWidth="58.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="58.0" text="&lt;&lt; " />
             <Button fx:id="playpause" maxHeight="50.0" maxWidth="160.0" minHeight="6.0" minWidth="72.0" mnemonicParsing="false" prefHeight="6.0" prefWidth="72.0" text="Pause" />
-            <Button fx:id="forwardStep" maxHeight="50.0" maxWidth="160.0" minHeight="50.0" minWidth="54.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="54.0" text="&gt;&gt; " />
+            <Button fx:id="forwardStep" maxHeight="50.0" maxWidth="160.0" minHeight="30.0" minWidth="54.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="54.0" text="&gt;&gt; " />
          </buttons>
       </ButtonBar>
       <Label fx:id="solLabel" layoutX="204.0" layoutY="683.0" prefHeight="38.0" prefWidth="58.0" text="Sol:">
@@ -151,10 +152,10 @@
             <Font size="15.0" />
          </font>
       </TextField>
-      <Button fx:id="addMarker" layoutX="109.0" layoutY="685.0" mnemonicParsing="false" text="add marker" />
-      <Pane layoutX="683.0" prefHeight="339.0" prefWidth="683.0">
+      <Button fx:id="addMarker" layoutX="107.0" layoutY="692.0" mnemonicParsing="false" text="add marker" />
+      <StackPane layoutX="683.0" prefHeight="339.0" prefWidth="683.0">
          <children>
-            <LineChart fx:id="lineChart" prefHeight="339.0" prefWidth="683.0" style="-fx-legend-visible: false;">
+            <LineChart fx:id="lineChart" maxWidth="683.0" minWidth="683.0" prefHeight="329.0" prefWidth="683.0" style="-fx-legend-visible: false;">
               <xAxis>
                 <NumberAxis side="BOTTOM" fx:id="xAxis" />
               </xAxis>
@@ -163,6 +164,6 @@
               </yAxis>
             </LineChart>
          </children>
-      </Pane>
+      </StackPane>
    </children>
 </AnchorPane>

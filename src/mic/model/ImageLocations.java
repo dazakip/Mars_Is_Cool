@@ -1,4 +1,4 @@
-package mic.gui;
+package mic.model;
 
 /**
  * Created by Dazak on 15/03/2017.
