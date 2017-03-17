@@ -1,0 +1,7 @@
+@import url("stylesheet.css");
+
+.chart-series-line {
+    -fx-stroke-width: 1px;
+    -fx-effect: null;
+	-fx-stroke: orange;
+}

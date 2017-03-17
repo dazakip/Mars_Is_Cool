@@ -129,7 +129,7 @@ public class RMDparser {
                              double UVA, double humidity, double pressure) throws SQLException {
 
         System.out.println(timestamp + " - " + sol + " - " + time + " |Elevation: " +elevation+ " |AirTemp: " + airtemp + " |UVA: " + UVA + " |Humidity: " + humidity + " Pressure: " + pressure);
-        java.sql.Time myTime = java.sql.Time.valueOf(time);
+        //java.sql.Time myTime = java.sql.Time.valueOf(time);
 
         String sql = "INSERT INTO CURIOSITYDATA (STAMP, SOL, TIME, ELEVATION, AIRTEMP, UVA, HUMIDITY, PRESSURE) " +
                     " VALUES(?,?,?,?,?,?,?,?)";
@@ -137,7 +137,7 @@ public class RMDparser {
         PreparedStatement pstmt = newC.prepareStatement(sql);
         pstmt.setInt(1, timestamp);
         pstmt.setInt(2, sol);
-        pstmt.setTime(3, myTime);
+        pstmt.setString(3, time);
         if (elevation!=nooll) pstmt.setDouble(4, elevation);
         else pstmt.setNull(4, java.sql.Types.DOUBLE);
 
