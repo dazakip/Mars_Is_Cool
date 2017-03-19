@@ -27,7 +27,7 @@ public class CuriosityDatabase {
     public void nextSol(int sol) throws SQLException {
 
         stmt = c.createStatement();
-        rs = stmt.executeQuery( "SELECT * FROM CURIOSITYDATA WHERE SOL="+sol+";");
+        rs = stmt.executeQuery( "SELECT * FROM CURIOSITYDATA WHERE SOL ="+sol+";");
 
         while (rs.next()) {
             DataEntry d = new DataEntry();
@@ -58,14 +58,17 @@ public class CuriosityDatabase {
         return dataEntries;
     }
 
-    public void updateEntries(double lowestBound) {
+    public void updateEntries(double lowestBound, double upperBound) {
+
         ArrayList<DataEntry> oldData = new ArrayList<>();
         for (DataEntry d : dataEntries) {
-            if (d.getTimeStamp() < lowestBound) {
+            System.out.println(d.getTimeStamp());
+            if (d.getTimeStamp() < lowestBound || d.getTimeStamp() > upperBound+88765) {
                 oldData.add(d);
             }
         }
 
+        System.out.println("Old data size: "+oldData.size());
         dataEntries.removeAll(oldData);
     }
 }

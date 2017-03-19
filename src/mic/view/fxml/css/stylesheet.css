@@ -19,6 +19,7 @@
 	-fx-horizontal-zero-line-visible: false;
 	-fx-horizontal-grid-lines-visible: false;
 	-fx-vertical-grid-lines-visible: false;
+	-fx-create-symbols: false;
 }
 
 .chart-plot-background {

@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.Cursor?>
 <?import javafx.scene.chart.LineChart?>
 <?import javafx.scene.chart.NumberAxis?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -155,47 +158,124 @@
       <Button fx:id="addMarker" layoutX="107.0" layoutY="692.0" mnemonicParsing="false" text="add marker" />
       <StackPane layoutX="683.0" maxHeight="339.0" maxWidth="683.0" minHeight="339.0" minWidth="683.0" prefHeight="339.0" prefWidth="683.0">
          <children>
-            <LineChart fx:id="tempChart" animated="false" createSymbols="false" layoutX="10.0" layoutY="10.0" maxHeight="329.0" maxWidth="683.0" minHeight="329.0" minWidth="683.0" prefHeight="329.0" prefWidth="683.0" stylesheets="@css/temp.css" verticalZeroLineVisible="false">
+            <LineChart fx:id="tempChart" alternativeColumnFillVisible="true" animated="false" createSymbols="false" focusTraversable="true" layoutX="100.0" layoutY="100.0" maxHeight="300.0" maxWidth="683.0" minHeight="300.0" minWidth="683.0" prefHeight="300.0" prefWidth="683.0" stylesheets="@css/temp.css" verticalZeroLineVisible="false">
                <xAxis>
-                  <NumberAxis side="BOTTOM" fx:id="tempX" />
+                  <NumberAxis fx:id="tempX" side="BOTTOM" />
                </xAxis>
                <yAxis>
                   <NumberAxis fx:id="tempY" side="LEFT" />
                </yAxis>
+               <StackPane.margin>
+                  <Insets />
+               </StackPane.margin>
             </LineChart>
-            <LineChart fx:id="elevChart" animated="false" createSymbols="false" layoutX="10.0" layoutY="10.0" maxHeight="329.0" maxWidth="683.0" minHeight="329.0" minWidth="683.0" prefHeight="329.0" prefWidth="683.0" stylesheets="@css/elev.css" verticalZeroLineVisible="false">
+            <LineChart fx:id="elevChart" alternativeColumnFillVisible="true" animated="false" createSymbols="false" focusTraversable="true" layoutX="100.0" layoutY="10.0" maxHeight="300.0" maxWidth="674.0" minHeight="300.0" minWidth="674.0" prefHeight="300.0" prefWidth="674.0" stylesheets="@css/elev.css" verticalZeroLineVisible="false">
                <xAxis>
-                  <NumberAxis side="BOTTOM" fx:id="elevX" />
+                  <NumberAxis fx:id="elevX" side="BOTTOM" />
                </xAxis>
                <yAxis>
                   <NumberAxis fx:id="elevY" side="LEFT" />
                </yAxis>
             </LineChart>
-            <LineChart fx:id="uvaChart" animated="false" createSymbols="false" layoutX="10.0" layoutY="10.0" maxHeight="329.0" maxWidth="683.0" minHeight="329.0" minWidth="683.0" prefHeight="329.0" prefWidth="683.0" stylesheets="@css/uva.css" verticalZeroLineVisible="false">
+            <LineChart fx:id="uvaChart" alternativeColumnFillVisible="true" animated="false" focusTraversable="true" layoutX="100.0" layoutY="10.0" maxHeight="300.0" maxWidth="665.5" minHeight="300.0" minWidth="665.5" prefHeight="300.0" prefWidth="665.5" stylesheets="@css/uva.css" verticalZeroLineVisible="false">
                <xAxis>
-                  <NumberAxis side="BOTTOM" fx:id="uvaX" />
+                  <NumberAxis fx:id="uvaX" side="BOTTOM" />
                </xAxis>
                <yAxis>
                   <NumberAxis fx:id="uvaY" side="LEFT" />
                </yAxis>
+               <StackPane.margin>
+                  <Insets />
+               </StackPane.margin>
             </LineChart>
-            <LineChart fx:id="pressChart" animated="false" createSymbols="false" layoutX="10.0" layoutY="15.0" maxHeight="329.0" maxWidth="683.0" minHeight="329.0" minWidth="683.0" prefHeight="329.0" prefWidth="683.0" stylesheets="@css/press.css" verticalZeroLineVisible="false">
+            <LineChart fx:id="pressChart" alternativeColumnFillVisible="true" animated="false" axisSortingPolicy="Y_AXIS" createSymbols="false" focusTraversable="true" maxHeight="300.0" maxWidth="665.5" minHeight="300.0" minWidth="665.5" prefHeight="300.0" prefWidth="665.5" stylesheets="@css/press.css" verticalZeroLineVisible="false">
                <xAxis>
-                  <NumberAxis side="BOTTOM" fx:id="pressX" />
+                  <NumberAxis fx:id="pressX" side="BOTTOM" />
                </xAxis>
                <yAxis>
                   <NumberAxis fx:id="pressY" side="LEFT" />
                </yAxis>
+               <StackPane.margin>
+                  <Insets />
+               </StackPane.margin>
             </LineChart>
-            <LineChart fx:id="humidChart" animated="false" createSymbols="false" layoutX="10.0" layoutY="15.0" maxHeight="329.0" maxWidth="683.0" minHeight="329.0" minWidth="683.0" prefHeight="329.0" prefWidth="683.0" stylesheets="@css/humid.css" verticalZeroLineVisible="false">
+            <LineChart fx:id="humidChart" alternativeColumnFillVisible="true" animated="false" createSymbols="false" focusTraversable="true" layoutX="100.0" layoutY="10.0" maxHeight="300.0" maxWidth="665.5" minHeight="300.0" minWidth="665.5" prefHeight="300.0" prefWidth="665.5" stylesheets="@css/humid.css" verticalZeroLineVisible="false">
                <xAxis>
-                  <NumberAxis side="BOTTOM" fx:id="humidX" />
+                  <NumberAxis fx:id="humidX" side="BOTTOM" />
                </xAxis>
                <yAxis>
                   <NumberAxis fx:id="humidY" side="LEFT" />
                </yAxis>
+               <StackPane.margin>
+                  <Insets />
+               </StackPane.margin>
             </LineChart>
          </children>
       </StackPane>
+      <Label fx:id="tenth" layoutX="1300.0" layoutY="290.0" text="Sol 10">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+      <Label fx:id="ninth" layoutX="1245.0" layoutY="290.0" text="Sol 9">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+      <Label fx:id="eighth" layoutX="1190.0" layoutY="290.0" text="Sol 8">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+      <Label fx:id="seventh" layoutX="1135.0" layoutY="290.0" text="Sol 7">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+      <Label fx:id="sixth" layoutX="1080.0" layoutY="290.0" text="Sol 6">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+      <Label fx:id="fifth" layoutX="1020.0" layoutY="290.0" text="Sol 5">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+      <Label fx:id="zeroth" layoutX="745.0" layoutY="290.0" text="Sol 0">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+      <Label fx:id="fourth" layoutX="970.0" layoutY="290.0" text="Sol 4">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+      <Label fx:id="third" layoutX="910.0" layoutY="290.0" text="Sol 3">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+      <Label fx:id="second" layoutX="855.0" layoutY="290.0" text="Sol 2">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+      <Label fx:id="first" layoutX="800.0" layoutY="290.0" text="Sol 1">
+         <font>
+            <Font size="11.0" />
+         </font>
+      </Label>
+      <ButtonBar layoutX="687.0" prefHeight="30.0" prefWidth="674.0">
+         <buttons>
+            <ChoiceBox fx:id="chooseAxisY" prefWidth="100.0" />
+            <ToggleButton fx:id="tempToggle" mnemonicParsing="false" prefHeight="25.0" prefWidth="86.0" text="Temperature" textFill="RED" />
+            <ToggleButton fx:id="uvaToggle" mnemonicParsing="false" text="UVA" textFill="#00eb6a" />
+            <ToggleButton fx:id="humidToggle" mnemonicParsing="false" text="Humidity" textFill="#ffc400" />
+            <ToggleButton fx:id="elevToggle" mnemonicParsing="false" text="Elevation" textFill="#0003d9" />
+            <ToggleButton fx:id="pressToggle" mnemonicParsing="false" prefHeight="25.0" text="Pressure" textFill="#ab0091" />
+         </buttons>
+      </ButtonBar>
    </children>
 </AnchorPane>

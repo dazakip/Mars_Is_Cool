@@ -9,23 +9,27 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
 import javafx.scene.image.ImageView ;
 import mic.model.CuriosityDatabase;
 import mic.model.DataEntry;
 import mic.model.ImageLocations;
 
 import static javafx.application.Platform.runLater;
+import static javafx.print.PrintColor.COLOR;
 
 /**
  * ExController handles all the logic for MIC.
@@ -38,7 +42,7 @@ public class ExController {
     @FXML
     private TextField solTextField;
     @FXML
-    private Label mainView;
+    private Label mainView, zeroth, first, second, third, fourth, fifth, sixth, seventh, eighth, ninth, tenth;
     @FXML
     private WebView map;
     private WebEngine webEngine;
@@ -50,17 +54,20 @@ public class ExController {
     private LineChart elevChart, tempChart, uvaChart, humidChart, pressChart;
     @FXML
     private NumberAxis elevX, elevY, tempX, tempY, uvaX, uvaY, humidX, humidY, pressX, pressY;
+    @FXML
+    private ToggleButton tempToggle, elevToggle, humidToggle, uvaToggle, pressToggle;
+    private ArrayList<ToggleButton> toggleButtons;
+    private ArrayList<LineChart> lineCharts;
+    @FXML
+    private ChoiceBox chooseAxisY;
+
+    private ArrayList<NumberAxis> yAxises;
 
     private XYChart.Series elevSeries;
     private XYChart.Series tempSeries;
     private XYChart.Series uvaSeries;
     private XYChart.Series humidSeries;
     private XYChart.Series pressSeries;
-
-    private ArrayList<LineChart> lineCharts;
-    private ArrayList<NumberAxis> xAxis;
-    private ArrayList<NumberAxis> yAxis;
-    private ArrayList<XYChart.Series> lineSeries;
 
     // fields critical to control flow
     private ImageLocations imgLocs;
@@ -85,6 +92,9 @@ public class ExController {
         cameras = new ArrayList<>();
         imgLocs = new ImageLocations();
         db = new CuriosityDatabase();
+        yAxises = new ArrayList<>();
+        toggleButtons = new ArrayList<>();
+        lineCharts = new ArrayList<>();
     }
 
     /**
@@ -110,8 +120,8 @@ public class ExController {
     private void loop() throws SQLException, ClassNotFoundException {
 
         currentSol++;
-        updateCamera();
         runLater(() -> {
+            updateCamera();
             try {
                 updateLineChart();
             } catch (SQLException e) {
@@ -200,6 +210,26 @@ public class ExController {
             });
         }
 
+        chooseAxisY.valueProperty().addListener((ov, t, t1) -> {
+                changeAxisY(t1.toString());
+        });
+
+        toggleButtons.add(tempToggle);
+        toggleButtons.add(elevToggle);
+        toggleButtons.add(pressToggle);
+        toggleButtons.add(uvaToggle);
+        toggleButtons.add(humidToggle);
+
+        for (ToggleButton tb:toggleButtons) {
+            tb.setOnAction(event -> {
+                if (tb.isSelected()) {
+                    changeLineVisibility(tb.getId(), true);
+                }
+                else
+                    changeLineVisibility(tb.getId(), false);
+            });
+        }
+
         /**************************************************************************************************************
          * Button used for various tests ---------------- DELETE AT THE END
          */
@@ -208,66 +238,145 @@ public class ExController {
         /**************************************************************************************************************/
     }
 
+    private void changeLineVisibility(String line, boolean visible){
+        if (visible) {
+            if (line.equals("tempToggle")) {
+                tempChart.setOpacity(1);
+            }
+            if (line.equals("elevToggle")) {
+                elevChart.setOpacity(1);
+            }
+            if (line.equals("uvaToggle")) {
+                uvaChart.setOpacity(1);
+            }
+            if (line.equals("humidToggle")) {
+                humidChart.setOpacity(1);
+            }
+            if (line.equals("pressToggle")) {
+                pressChart.setOpacity(1);
+            }
+        }
+
+        else {
+            System.out.println(line);
+            if (line.equals("tempToggle")) { tempChart.setOpacity(0); }
+            if (line.equals("elevToggle")) { elevChart.setOpacity(0); }
+            if (line.equals("uvaToggle")) { uvaChart.setOpacity(0); }
+            if (line.equals("humidToggle")) { humidChart.setOpacity(0); }
+            if (line.equals("pressToggle")) { pressChart.setOpacity(0); }
+        }
+    }
+
+    private void changeAxisY(String newY) {
+
+        for (NumberAxis y:yAxises)
+            y.setOpacity(0);
+
+        if (newY.equals("Temperature")) { tempY.setOpacity(1);}
+        if (newY.equals("UVA")) { uvaY.setOpacity(1);}
+        if (newY.equals("Pressure")) { pressY.setOpacity(1); }
+        if (newY.equals("Humidity")) { humidY.setOpacity(1);}
+        if (newY.equals("Elevation")) { elevY.setOpacity(1);}
+    }
+
+    private void changeChartLabels() {
+        if (currentSol>=9) {tenth.setTextFill(Color.RED);}
+
+        if (currentSol>=solsOnGraph) {
+            zeroth.setText("Sol " + (currentSol - 10));
+            first.setText("Sol " + (currentSol - 9));
+            second.setText("Sol " + (currentSol - 8));
+            third.setText("Sol " + (currentSol - 7));
+            fourth.setText("Sol " + (currentSol - 6));
+            fifth.setText("Sol " + (currentSol - 5));
+            sixth.setText("Sol " + (currentSol - 4));
+            seventh.setText("Sol " + (currentSol - 3));
+            eighth.setText("Sol " + (currentSol - 2));
+            ninth.setText("Sol " + (currentSol - 1));
+            tenth.setText("Sol " + currentSol);
+        }
+    }
+
     private void createCharts(){
         //temperature
-        tempY.setLabel("Temperature(K)");
         tempY.setAutoRanging(false);
-        tempY.setUpperBound(10.00);
+        tempY.setUpperBound(0);
         tempY.setLowerBound(-100.00);
         tempY.setTickUnit(10);
-        tempX.setLabel("LTST");
         tempX.setAutoRanging(false);
         tempX.setUpperBound(solSeconds*solsOnGraph);
         tempX.setLowerBound(0);
         tempX.setTickUnit(solSeconds);
 
         //elevation
-        elevY.setLabel("Elevation");
         elevY.setAutoRanging(false);
         elevY.setUpperBound(175.00);
         elevY.setLowerBound(-25.00);
         elevY.setTickUnit(25);
-        elevX.setLabel("LTST");
         elevX.setAutoRanging(false);
         elevX.setUpperBound(solSeconds*solsOnGraph);
         elevX.setLowerBound(0);
         elevX.setTickUnit(solSeconds);
 
         //uva
-        uvaY.setLabel("UVA");
         uvaY.setAutoRanging(false);
         uvaY.setUpperBound(11);
         uvaY.setLowerBound(0);
         uvaY.setTickUnit(1);
-        uvaX.setLabel("LTST");
         uvaX.setAutoRanging(false);
         uvaX.setUpperBound(solSeconds*solsOnGraph);
         uvaX.setLowerBound(0);
         uvaX.setTickUnit(solSeconds);
 
         //pressure
-        pressY.setLabel("UVA");
         pressY.setAutoRanging(false);
         pressY.setUpperBound(4.9);
         pressY.setLowerBound(2.7);
         pressY.setTickUnit(0.1);
-        pressX.setLabel("LTST");
         pressX.setAutoRanging(false);
         pressX.setUpperBound(solSeconds*solsOnGraph);
         pressX.setLowerBound(0);
         pressX.setTickUnit(solSeconds);
 
         //humid
-        humidY.setLabel("UVA");
         humidY.setAutoRanging(false);
         humidY.setUpperBound(50);
         humidY.setLowerBound(0);
         humidY.setTickUnit(1);
-        humidX.setLabel("LTST");
         humidX.setAutoRanging(false);
         humidX.setUpperBound(solSeconds*solsOnGraph);
         humidX.setLowerBound(0);
         humidX.setTickUnit(solSeconds);
+
+        elevChart.getYAxis().setOpacity(0);
+        pressChart.getYAxis().setOpacity(0);
+        humidChart.getYAxis().setOpacity(0);
+        uvaChart.getYAxis().setOpacity(0);
+
+        tempChart.getXAxis().setOpacity(0);
+        elevChart.getXAxis().setOpacity(0);
+        pressChart.getXAxis().setOpacity(0);
+        humidChart.getXAxis().setOpacity(0);
+        uvaChart.getXAxis().setOpacity(0);
+
+        tempToggle.setSelected(true);
+        elevToggle.setSelected(true);
+        uvaToggle.setSelected(true);
+        pressToggle.setSelected(true);
+        humidToggle.setSelected(true);
+
+        chooseAxisY.setItems(FXCollections.observableArrayList(
+                "Temperature", "UVA", "Humidity", "Elevation", "Pressure")
+        );
+        chooseAxisY.setTooltip(new Tooltip("Change the Y Axis"));
+        chooseAxisY.setValue("Temperature");
+
+        yAxises.add(tempY);
+        yAxises.add(elevY);
+        yAxises.add(pressY);
+        yAxises.add(uvaY);
+        yAxises.add(humidY);
+
     }
 
     private void updateLineChart() throws SQLException {
@@ -283,8 +392,9 @@ public class ExController {
         pressSeries = new XYChart.Series();
         humidSeries = new XYChart.Series();
 
-
         db.nextSol(currentSol);
+        changeChartLabels();
+
         if (currentSol >=solsOnGraph) {
             tempX.setUpperBound((currentSol * solSeconds));
             tempX.setLowerBound((currentSol * solSeconds) - (solSeconds*solsOnGraph));
@@ -296,10 +406,11 @@ public class ExController {
             pressX.setLowerBound((currentSol * solSeconds) - (solSeconds*solsOnGraph));
             humidX.setUpperBound((currentSol * solSeconds));
             humidX.setLowerBound((currentSol * solSeconds) - (solSeconds*solsOnGraph));
-            db.updateEntries(tempX.getLowerBound()-(solSeconds*solsOnGraph));
+            db.updateEntries(tempX.getLowerBound(), tempX.getUpperBound());
         }
 
 
+        System.out.println(db.getDataEntries().size());
         for (DataEntry d : db.getDataEntries()) {
             if (d.getAirTemp()!=11111) {tempSeries.getData().add(new XYChart.Data(d.getTimeStamp(), d.getAirTemp())); }
             if (d.getElevation()!=11111) {elevSeries.getData().add(new XYChart.Data(d.getTimeStamp(), d.getElevation()));}
@@ -307,6 +418,7 @@ public class ExController {
             if (d.getPressure()!=11111){pressSeries.getData().add(new XYChart.Data(d.getTimeStamp(), d.getPressure()));}
             if (d.getHumidity()!=11111){humidSeries.getData().add(new XYChart.Data(d.getTimeStamp(), d.getHumidity()));}
         }
+
 
         elevChart.getData().add(elevSeries);
         tempChart.getData().add(tempSeries);
