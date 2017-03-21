@@ -27,19 +27,13 @@ public class CREATE_db_and_table
         Statement stmt = null;
         try {
             Class.forName("org.sqlite.JDBC");
-            c = DriverManager.getConnection("jdbc:sqlite:elevationData.db");
+            c = DriverManager.getConnection("jdbc:sqlite:CuratedView.db");
             System.out.println("Opened database successfully");
 
             stmt = c.createStatement();
-            String sql = "CREATE TABLE ELEVATION " +
-                    "(STAMP         TIMESTAMP   NOT NULL," +
-                    " SOL           INT         NOT NULL, " +
-                    " TIME          TIME        NOT NULL, " +
-                    " ELEVATION     DOUBLE"+
-                    " AIRTEMP     DOUBLE"+
-                    " UVA     DOUBLE"+
-                    " PRESSURE     DOUBLE"+
-                    " HUMIDITY     DOUBLE"+
+            String sql = "CREATE TABLE CURATED " +
+                    "(SOL           INT   NOT NULL," +
+                    " CAMERA        STRING   NOT NULL" +
                     ");";
             stmt.executeUpdate(sql);
             stmt.close();

@@ -1,5 +1,66 @@
+.slider .thumb{
+    -fx-background-color: rgb(60,60,60);
+    -fx-border-radius: 100;
+	-fx-border-width: 1;
+    -fx-border-color: darkgray;
+    -fx-pref-height: 20;
+    -fx-pref-width: 8;
+}
+.slider .track{
+    -fx-background-color: white;
+}
+
+.solLabels {
+	-fx-text-fill: white;
+}
+
+.axis { 
+    -fx-tick-label-fill: white;
+   
+}
+
+.infoBox {
+	-fx-fill: #303030;
+	-fx-arc-height:0;	 
+	-fx-arc-width:0;
+}
+.infoIcon {
+	-fx-arc-height:5;	 
+	-fx-arc-width:5;
+	-fx-stroke-width: 1;
+	-fx-stroke: white;
+}
+
+.text-area {
+    -fx-background-color: transparent;
+}
+
+.text-area-with-margin {
+    -fx-padding: 500px;
+    -fx-border-insets: 5px;
+    -fx-background-insets: 5px;
+}
+
+.text-area .scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.text-area .scroll-pane .viewport{
+    -fx-background-color: transparent;
+}
+
+
+.text-area .scroll-pane .content{
+    -fx-background-color: transparent;
+}
+
+.yAxisChart {
+	-fx-text-fill: white;
+	-fx-rotate: -90;
+}
+
 .camLabel {
-	-fx-background-color: black;
+	-fx-background-color: #262626;
 	-fx-padding: -2 2 -2 2;
 	-fx-font-family: Futura, "Trebuchet MS", Arial, sans-serif;
 	-fx-font-size: 15px;
@@ -7,12 +68,13 @@
 }
 
 .mainCamLabel {
-	-fx-background-color: black;
+	-fx-background-color: #262626;
 	-fx-padding: -2 5 -2 5;
 	-fx-font-family: Futura, "Trebuchet MS", Arial, sans-serif;
 	-fx-font-size: 24px;
 	-fx-text-fill: white;
 }
+
 
 .chart {
 	-fx-legend-visible: false;
@@ -22,7 +84,54 @@
 	-fx-create-symbols: false;
 }
 
+
 .chart-plot-background {
 	-fx-background-color: transparent;
 
+}
+
+.choice-box {
+    -fx-background-color:#bc2e29;
+	-fx-text-fill: black;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
+	-fx-mark-color: black ;
+}
+
+.tempButton {
+    -fx-background-color:#bc2e29;
+	-fx-text-fill: black;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
+}
+
+.uvaButton {
+    -fx-background-color:#8cb464;
+	-fx-text-fill: black;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
+}
+.humidButton {
+    -fx-background-color:#d48621;
+	-fx-text-fill: black;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
+}
+.elevButton {
+    -fx-background-color:#5279c7;
+	-fx-text-fill: black;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
+}
+.pressButton {
+    -fx-background-color:#9e4c9e;
+	-fx-text-fill: black;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );
+    -fx-font-weight: bold;
+    -fx-font-size: 1.1em;
 }

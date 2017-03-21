@@ -1,5 +1,7 @@
 package mic.model;
 
+import java.sql.*;
+
 /**
  * Created by Dazak on 15/03/2017.
  */
@@ -8,79 +10,55 @@ public class ImageLocations {
     private String folderPath;
     private String selectedViewPath;
 
-    private String lastFRONTHAZ;
-    private String lastREARHAZ;
-    private String lastLEFTHAZ;
-    private String lastRIGHTHAZ;
-    private String lastMAST;
-    private String lastMARDI;
-    private String lastMAHLI;
-    private String lastCHEM;
+    private Connection c;
+    private Statement stmt;
+    private ResultSet rs;
 
-    public ImageLocations () {
+    private int sol;
+
+    public ImageLocations () throws SQLException, ClassNotFoundException {
+
+        Class.forName("org.sqlite.JDBC");
+        c = DriverManager.getConnection("jdbc:sqlite:CuratedView.db");
+        c.setAutoCommit(false);
+        sol = 0;
         folderPath = "C:\\Users\\Dazak\\Desktop\\mic_imgs\\";
-        selectedViewPath = folderPath+"LEFTHAZ\\";
-
-        lastFRONTHAZ = folderPath +"FRONTHAZ\\0";
-        lastREARHAZ = folderPath +"REARHAZ\\0";
-        lastRIGHTHAZ = folderPath +"RIGHTHAZ\\0";
-        lastLEFTHAZ = folderPath +"LEFTHAZ\\0";
-        lastMAHLI = folderPath +"MAHLI\\0";
-        lastMAST = folderPath +"MAST\\0";
-        lastMARDI = folderPath +"MARDI\\0";
-        lastCHEM = folderPath +"CHEM\\0";
+        setSelectedView("CURATED");
     }
 
-    public String getCamera(String camera) {
+    public void nextSol(){
+        sol = sol + 1;
+    }
+
+    public String getCamera(String camera)  {
         return folderPath+camera+"\\";
     }
 
-    public String getSelectedView(){
+    public String getCurated() throws SQLException{
+        stmt = c.createStatement();
+        rs = stmt.executeQuery( "SELECT * FROM CURATED WHERE SOL ="+sol+";");
+        rs.next();
+        return folderPath+rs.getString("CAMERA")+"_th\\";
+    }
+
+    public String getSelectedView() throws SQLException {
+        if (selectedViewPath.equals("CURATED")) {
+            stmt = c.createStatement();
+            rs = stmt.executeQuery( "SELECT * FROM CURATED WHERE SOL ="+sol+";");
+            while (rs.next()) {
+                return folderPath+rs.getString("CAMERA")+"\\";
+            }
+        }
         return selectedViewPath;
     }
 
     public void setSelectedView(String newCamera) {
-        selectedViewPath = folderPath+newCamera+"\\";
-    }
+        if (newCamera.equals("CURATED")) {
+            selectedViewPath = "CURATED";
+        }
+        else
+            selectedViewPath = folderPath+newCamera+"\\";
 
-    public void setLastAvailable(String camera, int sol) {
-        if (camera.equals("FRONTHAZ"))
-            lastFRONTHAZ = folderPath+camera+"\\"+sol;
-        else if (camera.equals("REARHAZ"))
-            lastREARHAZ = folderPath+camera+"\\"+sol;
-        else if (camera.equals("LEFTHAZ"))
-            lastLEFTHAZ = folderPath+camera+"\\"+sol;
-        else if (camera.equals("RIGHTHAZ"))
-            lastRIGHTHAZ = folderPath+camera+"\\"+sol;
-        else if (camera.equals("MAHLI"))
-            lastMAHLI = folderPath+camera+"\\"+sol;
-        else if (camera.equals("MAST"))
-            lastMAST = folderPath+camera+"\\"+sol;
-        else if (camera.equals("MARDI"))
-            lastMARDI = folderPath+camera+"\\"+sol;
-        else if (camera.equals("CHEM"))
-            lastCHEM = folderPath+camera+"\\"+sol;
-    }
-
-    public String getLastAvailable(String camera) {
-        if (camera.equals("FRONTHAZ"))
-            return lastFRONTHAZ;
-        else if (camera.equals("REARHAZ"))
-            return lastREARHAZ;
-        else if (camera.equals("LEFTHAZ"))
-            return lastLEFTHAZ;
-        else if (camera.equals("RIGHTHAZ"))
-            return lastRIGHTHAZ;
-        else if (camera.equals("MAHLI"))
-            return lastMAHLI;
-        else if (camera.equals("MAST"))
-            return lastMAST;
-        else if (camera.equals("MARDI"))
-            return lastMARDI;
-        else if (camera.equals("CHEM"))
-            return lastCHEM;
-
-        return null;
     }
 
     public String getCamLabel(String camera) {

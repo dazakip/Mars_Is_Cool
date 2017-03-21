@@ -62,13 +62,11 @@ public class CuriosityDatabase {
 
         ArrayList<DataEntry> oldData = new ArrayList<>();
         for (DataEntry d : dataEntries) {
-            System.out.println(d.getTimeStamp());
             if (d.getTimeStamp() < lowestBound || d.getTimeStamp() > upperBound+88765) {
                 oldData.add(d);
             }
         }
 
-        System.out.println("Old data size: "+oldData.size());
         dataEntries.removeAll(oldData);
     }
 }

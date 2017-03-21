@@ -9,18 +9,15 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.Cursor;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.scene.image.ImageView ;
@@ -29,45 +26,51 @@ import mic.model.DataEntry;
 import mic.model.ImageLocations;
 
 import static javafx.application.Platform.runLater;
-import static javafx.print.PrintColor.COLOR;
 
 /**
- * ExController handles all the logic for MIC.
+ * Controller handles all the logic for MIC.
  */
-public class ExController {
+public class Controller {
+    // Camera related fields
+    @FXML
+    private Label mainView, zeroth, first, second, third, fourth, fifth, sixth, seventh, eighth, ninth, tenth;
     @FXML
     private ImageView   MAINVIEW, FRONTHAZ_th, REARHAZ_th, LEFTHAZ_th, RIGHTHAZ_th,
                         MAST_th, MAHLI_th, MARDI_th, CHEM_th, CURATED_th;
     private ArrayList<ImageView> cameras;
-    @FXML
-    private TextField solTextField;
-    @FXML
-    private Label mainView, zeroth, first, second, third, fourth, fifth, sixth, seventh, eighth, ninth, tenth;
+
+    // Map realted fields
     @FXML
     private WebView map;
     private WebEngine webEngine;
-    @FXML
-    private Slider solSlider;
-    @FXML
-    private Button playpause, forwardStep, backwardStep, addMarker;
+
+    // Line chart related fields
     @FXML
     private LineChart elevChart, tempChart, uvaChart, humidChart, pressChart;
-    @FXML
-    private NumberAxis elevX, elevY, tempX, tempY, uvaX, uvaY, humidX, humidY, pressX, pressY;
-    @FXML
-    private ToggleButton tempToggle, elevToggle, humidToggle, uvaToggle, pressToggle;
-    private ArrayList<ToggleButton> toggleButtons;
     private ArrayList<LineChart> lineCharts;
-    @FXML
-    private ChoiceBox chooseAxisY;
-
-    private ArrayList<NumberAxis> yAxises;
-
     private XYChart.Series elevSeries;
     private XYChart.Series tempSeries;
     private XYChart.Series uvaSeries;
     private XYChart.Series humidSeries;
     private XYChart.Series pressSeries;
+    @FXML
+    private NumberAxis elevX, elevY, tempX, tempY, uvaX, uvaY, humidX, humidY, pressX, pressY;
+    private ArrayList<NumberAxis> yAxises;
+    @FXML
+    private Label yAxisLabel;
+    @FXML
+    private ChoiceBox chooseAxisY;
+    @FXML
+    private ToggleButton tempToggle, elevToggle, humidToggle, uvaToggle, pressToggle;
+    private ArrayList<ToggleButton> toggleButtons;
+
+    // Sol Controlling related fields
+    @FXML
+    private Label solNumber;
+    @FXML
+    private Slider solSlider;
+    @FXML
+    private Button playpause, forwardStep, backwardStep;
 
     // fields critical to control flow
     private ImageLocations imgLocs;
@@ -77,14 +80,12 @@ public class ExController {
     private int solsOnGraph;
     private ScheduledExecutorService execService;
     private Future<?> future;
-
-    // Reference to the main application.
     private MainApp mainApp;
 
     /**
      * The constructor is called before the initialize() method.
      */
-    public ExController() throws SQLException, ClassNotFoundException {
+    public Controller() throws SQLException, ClassNotFoundException {
         currentSol = -1;
         solSeconds = 88765;
         solsOnGraph = 10;
@@ -120,17 +121,29 @@ public class ExController {
     private void loop() throws SQLException, ClassNotFoundException {
 
         currentSol++;
+        imgLocs.nextSol();
         runLater(() -> {
-            updateCamera();
             try {
+                updateCamera();
                 updateLineChart();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-            solTextField.setText(Integer.toString(currentSol));
+            setSolLabel(currentSol);
             solSlider.setValue(currentSol);
             webEngine.executeScript("highlightPath("+currentSol+");");
         });
+    }
+
+    private void setSolLabel(int sol){
+        if (currentSol <10)
+            solNumber.setText("000"+Integer.toString(sol));
+        else if (currentSol<100)
+            solNumber.setText("00"+Integer.toString(sol));
+        else if (currentSol<1000)
+            solNumber.setText("0"+Integer.toString(sol));
+        else
+            solNumber.setText(Integer.toString(sol));
     }
 
     /**
@@ -140,19 +153,9 @@ public class ExController {
     private void establishListeners() {
         //sol slider listener
         solSlider.valueProperty().addListener((arg0, arg1, arg2) -> {
-            solTextField.setText(Integer.toString((int) solSlider.getValue()));
+            setSolLabel((int) solSlider.getValue());
             currentSol = (int) solSlider.getValue();
-            updateCamera();
-        });
-
-        // text field showing the current sol listener
-        solTextField.focusedProperty().addListener((arg0, oldPropertyValue, newPropertyValue) -> {
-            if (newPropertyValue){
-                pauseScheduler();
-            } else {
-                currentSol = Integer.parseInt(solTextField.getText());
-                playScheduler(true);
-            }
+            try {updateCamera();} catch (SQLException e) { e.printStackTrace();}
         });
 
         // button that play/pauses the system
@@ -167,13 +170,9 @@ public class ExController {
         // button that move system 1 sol forward
         forwardStep.setOnAction(event -> {
             pauseScheduler();
-            try {
-                loop();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-            }
+            try {loop();}
+            catch (SQLException e) {e.printStackTrace();}
+            catch (ClassNotFoundException e) {e.printStackTrace();}
         });
 
         // button that move system 1 sol back
@@ -206,7 +205,7 @@ public class ExController {
                 String camalam = cam.getId().substring(0, cam.getId().length() - 3);
                 imgLocs.setSelectedView(camalam);
                 mainView.setText(imgLocs.getCamLabel(camalam));
-                updateCamera();
+                try {updateCamera();} catch (SQLException e) {e.printStackTrace();}
             });
         }
 
@@ -229,41 +228,52 @@ public class ExController {
                     changeLineVisibility(tb.getId(), false);
             });
         }
-
-        /**************************************************************************************************************
-         * Button used for various tests ---------------- DELETE AT THE END
-         */
-        addMarker.setOnAction(event ->
-                runLater(() -> webEngine.executeScript("panToCuriosity();")));
-        /**************************************************************************************************************/
     }
 
     private void changeLineVisibility(String line, boolean visible){
         if (visible) {
             if (line.equals("tempToggle")) {
                 tempChart.setOpacity(1);
+                tempToggle.setStyle("-fx-background-color:#bc2e29;");
             }
             if (line.equals("elevToggle")) {
                 elevChart.setOpacity(1);
+                elevToggle.setStyle("-fx-background-color:#5279c7;");
             }
             if (line.equals("uvaToggle")) {
                 uvaChart.setOpacity(1);
+                uvaToggle.setStyle("-fx-background-color:#8cb464;");
             }
             if (line.equals("humidToggle")) {
                 humidChart.setOpacity(1);
+                humidToggle.setStyle("-fx-background-color:#d48621;");
             }
             if (line.equals("pressToggle")) {
                 pressChart.setOpacity(1);
+                pressToggle.setStyle("-fx-background-color:#9e4c9e;");
             }
         }
 
         else {
-            System.out.println(line);
-            if (line.equals("tempToggle")) { tempChart.setOpacity(0); }
-            if (line.equals("elevToggle")) { elevChart.setOpacity(0); }
-            if (line.equals("uvaToggle")) { uvaChart.setOpacity(0); }
-            if (line.equals("humidToggle")) { humidChart.setOpacity(0); }
-            if (line.equals("pressToggle")) { pressChart.setOpacity(0); }
+            if (line.equals("tempToggle")) {
+                tempChart.setOpacity(0);
+                tempToggle.setStyle("-fx-background-color:grey;");
+            }
+            if (line.equals("elevToggle")) {
+                elevChart.setOpacity(0);
+                elevToggle.setStyle("-fx-background-color:grey;");
+            }
+            if (line.equals("uvaToggle")) {
+                uvaChart.setOpacity(0);
+                uvaToggle.setStyle("-fx-background-color:grey;");
+            }
+            if (line.equals("humidToggle")) {
+                humidChart.setOpacity(0);
+                humidToggle.setStyle("-fx-background-color:grey;");
+            }
+            if (line.equals("pressToggle")) {
+                pressChart.setOpacity(0);
+                pressToggle.setStyle("-fx-background-color:grey;"); }
         }
     }
 
@@ -272,28 +282,30 @@ public class ExController {
         for (NumberAxis y:yAxises)
             y.setOpacity(0);
 
-        if (newY.equals("Temperature")) { tempY.setOpacity(1);}
-        if (newY.equals("UVA")) { uvaY.setOpacity(1);}
-        if (newY.equals("Pressure")) { pressY.setOpacity(1); }
-        if (newY.equals("Humidity")) { humidY.setOpacity(1);}
-        if (newY.equals("Elevation")) { elevY.setOpacity(1);}
-    }
-
-    private void changeChartLabels() {
-        if (currentSol>=9) {tenth.setTextFill(Color.RED);}
-
-        if (currentSol>=solsOnGraph) {
-            zeroth.setText("Sol " + (currentSol - 10));
-            first.setText("Sol " + (currentSol - 9));
-            second.setText("Sol " + (currentSol - 8));
-            third.setText("Sol " + (currentSol - 7));
-            fourth.setText("Sol " + (currentSol - 6));
-            fifth.setText("Sol " + (currentSol - 5));
-            sixth.setText("Sol " + (currentSol - 4));
-            seventh.setText("Sol " + (currentSol - 3));
-            eighth.setText("Sol " + (currentSol - 2));
-            ninth.setText("Sol " + (currentSol - 1));
-            tenth.setText("Sol " + currentSol);
+        if (newY.equals("Temperature")) {
+            tempY.setOpacity(1);
+            yAxisLabel.setText("Celsius (°C)");
+            chooseAxisY.setStyle("-fx-background-color:#bc2e29;");
+        }
+        else if (newY.equals("UVA")) {
+            uvaY.setOpacity(1);
+            yAxisLabel.setText("Irradiance (W/m²)");
+            chooseAxisY.setStyle("-fx-background-color:#8cb464;");
+        }
+        else if (newY.equals("Pressure")) {
+            pressY.setOpacity(1);
+            yAxisLabel.setText("Pascal (Pa)");
+            chooseAxisY.setStyle("-fx-background-color:#9e4c9e;");
+        }
+        else if (newY.equals("Humidity")) {
+            humidY.setOpacity(1);
+            yAxisLabel.setText("Relative Humidity (%)");
+            chooseAxisY.setStyle("-fx-background-color:#d48621;");
+        }
+        else if (newY.equals("Elevation")) {
+            elevY.setOpacity(1);
+            yAxisLabel.setText("Metres (relative to landing site)");
+            chooseAxisY.setStyle("-fx-background-color:#5279c7;");
         }
     }
 
@@ -302,7 +314,7 @@ public class ExController {
         tempY.setAutoRanging(false);
         tempY.setUpperBound(0);
         tempY.setLowerBound(-100.00);
-        tempY.setTickUnit(10);
+        tempY.setTickUnit(20);
         tempX.setAutoRanging(false);
         tempX.setUpperBound(solSeconds*solsOnGraph);
         tempX.setLowerBound(0);
@@ -322,7 +334,7 @@ public class ExController {
         uvaY.setAutoRanging(false);
         uvaY.setUpperBound(11);
         uvaY.setLowerBound(0);
-        uvaY.setTickUnit(1);
+        uvaY.setTickUnit(2);
         uvaX.setAutoRanging(false);
         uvaX.setUpperBound(solSeconds*solsOnGraph);
         uvaX.setLowerBound(0);
@@ -332,7 +344,7 @@ public class ExController {
         pressY.setAutoRanging(false);
         pressY.setUpperBound(4.9);
         pressY.setLowerBound(2.7);
-        pressY.setTickUnit(0.1);
+        pressY.setTickUnit(0.3);
         pressX.setAutoRanging(false);
         pressX.setUpperBound(solSeconds*solsOnGraph);
         pressX.setLowerBound(0);
@@ -342,7 +354,7 @@ public class ExController {
         humidY.setAutoRanging(false);
         humidY.setUpperBound(50);
         humidY.setLowerBound(0);
-        humidY.setTickUnit(1);
+        humidY.setTickUnit(10);
         humidX.setAutoRanging(false);
         humidX.setUpperBound(solSeconds*solsOnGraph);
         humidX.setLowerBound(0);
@@ -393,7 +405,6 @@ public class ExController {
         humidSeries = new XYChart.Series();
 
         db.nextSol(currentSol);
-        changeChartLabels();
 
         if (currentSol >=solsOnGraph) {
             tempX.setUpperBound((currentSol * solSeconds));
@@ -409,8 +420,20 @@ public class ExController {
             db.updateEntries(tempX.getLowerBound(), tempX.getUpperBound());
         }
 
+        if (currentSol>=solsOnGraph) {
+            zeroth.setText("Sol " + (currentSol - 10));
+            first.setText("Sol " + (currentSol - 9));
+            second.setText("Sol " + (currentSol - 8));
+            third.setText("Sol " + (currentSol - 7));
+            fourth.setText("Sol " + (currentSol - 6));
+            fifth.setText("Sol " + (currentSol - 5));
+            sixth.setText("Sol " + (currentSol - 4));
+            seventh.setText("Sol " + (currentSol - 3));
+            eighth.setText("Sol " + (currentSol - 2));
+            ninth.setText("Sol " + (currentSol - 1));
+            tenth.setText("Sol " + currentSol);
+        }
 
-        System.out.println(db.getDataEntries().size());
         for (DataEntry d : db.getDataEntries()) {
             if (d.getAirTemp()!=11111) {tempSeries.getData().add(new XYChart.Data(d.getTimeStamp(), d.getAirTemp())); }
             if (d.getElevation()!=11111) {elevSeries.getData().add(new XYChart.Data(d.getTimeStamp(), d.getElevation()));}
@@ -419,41 +442,37 @@ public class ExController {
             if (d.getHumidity()!=11111){humidSeries.getData().add(new XYChart.Data(d.getTimeStamp(), d.getHumidity()));}
         }
 
-
         elevChart.getData().add(elevSeries);
         tempChart.getData().add(tempSeries);
         uvaChart.getData().add(uvaSeries);
         pressChart.getData().add(pressSeries);
         humidChart.getData().add(humidSeries);
+
+
     }
+
     /**
-     * Used whenever program is paused is to be resumed
+     * Resumes application from paused
      */
     private void playScheduler(boolean immediately) {
         long delay = 3000L;
+
         // for restarting scheduler quickly when changing sol/pressing play
         if (immediately)
             delay = 500L;
 
         future = execService.scheduleAtFixedRate(()->{
-            //The repetitive task
             if (currentSol<=1500)
-                try {
-                    loop();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
+                try { loop();}
+                catch (SQLException e) {e.printStackTrace();}
+                catch (ClassNotFoundException e) {e.printStackTrace();}
         }, delay, 1000L, TimeUnit.MILLISECONDS);
         playpause.setText("Pause");
 
     }
 
     /**
-     * Used whenever program is to be paused
-     * Even though is single line makes it easier to understand
-     * code/more workable if any changes in future
+     * Pauses whenever application is to be paused by this controller or by the user
      */
     private void pauseScheduler() {
         future.cancel(true);
@@ -463,8 +482,8 @@ public class ExController {
     /**
      * Called each "round" to update image views with images relative to sol
      */
-    private void updateCamera() {
-
+    private void updateCamera() throws SQLException {
+        // update main view with whatever is selected
         if (new File(imgLocs.getSelectedView() + currentSol + ".jpg").isFile()) {
             MAINVIEW.setOpacity(1);
             MAINVIEW.setImage(new Image("file:" + imgLocs.getSelectedView() + currentSol + ".jpg"));
@@ -473,7 +492,7 @@ public class ExController {
             MAINVIEW.setOpacity(0.75);
         }
 
-        // for each thumbnail view update
+        // update each thumbnail view
         for (ImageView currCam : cameras) {
             if (new File(imgLocs.getCamera(currCam.getId()) + "\\" + currentSol + ".jpg").isFile()) {
                 currCam.setOpacity(1);
@@ -481,6 +500,14 @@ public class ExController {
             }
             else {currCam.setOpacity(0.75);}
         }
+
+        // update curated thumbnail
+        if (new File(imgLocs.getCurated()+currentSol+".jpg").isFile()) {
+            CURATED_th.setOpacity(1);
+            CURATED_th.setImage(new Image ("file:"+imgLocs.getCurated()+currentSol+".jpg"));
+        }
+        else
+            CURATED_th.setOpacity(0.75);
     }
 
     /**

@@ -8,6 +8,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import parser.CuratedController;
 
 
 /**
@@ -69,7 +70,25 @@ public class MainApp extends Application {
 			rootLayout.setCenter(personOverview);
 
 			// Give the controller access to the main app.
-			ExController controller = loader.getController();
+			Controller controller = loader.getController();
+			controller.setMainApp(this);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void showCuratedView() {
+		try {
+			// Load view view.
+			FXMLLoader loader = new FXMLLoader();
+			loader.setLocation(MainApp.class.getResource("/parser/curated.fxml"));
+			AnchorPane personOverview = loader.load();
+
+			// Set view view into the center of root layout.
+			rootLayout.setCenter(personOverview);
+
+			// Give the controller access to the main app.
+			CuratedController controller = loader.getController();
 			controller.setMainApp(this);
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="505.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="parser.CuratedController">
+   <children>
+      <GridPane>
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="113.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="113.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="113.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="113.0" prefHeight="113.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="113.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="113.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <ImageView fx:id="LEFTHAZ" fitHeight="113.0" fitWidth="113.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="FRONTHAZ" fitHeight="113.0" fitWidth="113.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <ImageView fx:id="REARHAZ" fitHeight="113.0" fitWidth="113.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="1" />
+            <ImageView fx:id="RIGHTHAZ" fitHeight="113.0" fitWidth="113.0" layoutX="10.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" />
+            <ImageView fx:id="MAST" fitHeight="113.0" fitWidth="113.0" layoutX="123.0" layoutY="123.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="2" />
+            <ImageView fx:id="MAHLI" fitHeight="113.0" fitWidth="113.0" layoutX="10.0" layoutY="236.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <ImageView fx:id="MARDI" fitHeight="113.0" fitWidth="113.0" layoutX="123.0" layoutY="236.0" pickOnBounds="true" preserveRatio="true" GridPane.rowIndex="3" />
+            <ImageView fx:id="CHEM" fitHeight="113.0" fitWidth="113.0" layoutX="10.0" layoutY="349.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+         </children>
+      </GridPane>
+      <Label fx:id="currSol" layoutX="34.0" layoutY="452.0" text="Sol: _">
+         <font>
+            <Font size="27.0" />
+         </font>
+      </Label>
+   </children>
+</AnchorPane>
