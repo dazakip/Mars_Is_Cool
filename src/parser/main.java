@@ -16,7 +16,8 @@ public class main {
         //locationParsing r = new locationParsing();
         //remsDownloader r = new remsDownloader();
         //ADRparser r = new ADRparser();
-        RMDparser r = new RMDparser();
+        //RMDparser r = new RMDparser();
+        MissionUpdatesParser r = new MissionUpdatesParser();
         r.run();
 
     }

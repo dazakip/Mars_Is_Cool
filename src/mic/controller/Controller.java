@@ -1,13 +1,11 @@
 package mic.controller;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -17,6 +15,7 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
@@ -24,6 +23,7 @@ import javafx.scene.image.ImageView ;
 import mic.model.CuriosityDatabase;
 import mic.model.DataEntry;
 import mic.model.ImageLocations;
+import mic.model.InfoBoxRetrieval;
 
 import static javafx.application.Platform.runLater;
 
@@ -38,11 +38,18 @@ public class Controller {
     private ImageView   MAINVIEW, FRONTHAZ_th, REARHAZ_th, LEFTHAZ_th, RIGHTHAZ_th,
                         MAST_th, MAHLI_th, MARDI_th, CHEM_th, CURATED_th;
     private ArrayList<ImageView> cameras;
+    @FXML
+    private Label outdatedLabel;
 
     // Map realted fields
     @FXML
-    private WebView map;
-    private WebEngine webEngine;
+    private WebView mapGale;
+    private WebEngine webEngineGale;
+    @FXML
+    private WebView mapGlobal;
+    private WebEngine webEngineGlobal;
+    @FXML
+    private ImageView mapSwitch;
 
     // Line chart related fields
     @FXML
@@ -68,19 +75,25 @@ public class Controller {
     @FXML
     private Label solNumber;
     @FXML
+    private TextArea infoboxDesc;
+    @FXML
     private Slider solSlider;
     @FXML
     private Button playpause, forwardStep, backwardStep;
+    @FXML
+    private ImageView curiositySpeaks;
 
     // fields critical to control flow
     private ImageLocations imgLocs;
     private CuriosityDatabase db;
+    private InfoBoxRetrieval infobox;
     private int currentSol;
     private int solSeconds;
     private int solsOnGraph;
     private ScheduledExecutorService execService;
     private Future<?> future;
     private MainApp mainApp;
+    private boolean firstTime;
 
     /**
      * The constructor is called before the initialize() method.
@@ -93,9 +106,11 @@ public class Controller {
         cameras = new ArrayList<>();
         imgLocs = new ImageLocations();
         db = new CuriosityDatabase();
+        infobox = new InfoBoxRetrieval();
         yAxises = new ArrayList<>();
         toggleButtons = new ArrayList<>();
         lineCharts = new ArrayList<>();
+        firstTime = true;
     }
 
     /**
@@ -104,16 +119,22 @@ public class Controller {
      */
     @FXML
     private void initialize() {
+        URL url = getClass().getResource("/mic/view/map/openlayers_global_mic.html");
+        mapGlobal.getEngine().load(url.toExternalForm());
+        webEngineGlobal = mapGlobal.getEngine();
+        webEngineGlobal.load(url.toExternalForm());
         // grab mars map and laod into WebView
-        URL url = getClass().getResource("/mic/view/map/openlayers_mic.html");
-        map.getEngine().load(url.toExternalForm());
-        webEngine = map.getEngine();
-        webEngine.load(url.toExternalForm());
-
+        URL url2 = getClass().getResource("/mic/view/map/openlayers_mic.html");
+        mapGale.getEngine().load(url2.toExternalForm());
+        webEngineGale = mapGale.getEngine();
+        webEngineGale.load(url2.toExternalForm());
+        outdatedLabel.setVisible(false);
+        infoboxDesc.setEditable(false);
         playScheduler(false);
         establishListeners();
         createCharts();
     }
+
 
     /**
      * Method that is called every however often defined in the scheduler
@@ -126,13 +147,29 @@ public class Controller {
             try {
                 updateCamera();
                 updateLineChart();
+                infoboxUpdate();
             } catch (SQLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             setSolLabel(currentSol);
             solSlider.setValue(currentSol);
-            webEngine.executeScript("highlightPath("+currentSol+");");
+            webEngineGale.executeScript("highlightPath("+currentSol+");");
         });
+    }
+
+    private void infoboxUpdate() throws SQLException {
+        String desc = infobox.getInfoBox(currentSol);
+        infoboxDesc.setText(desc);
+        if (desc.charAt(0) == '\"') {
+            infoboxDesc.setStyle("-fx-font-size: 16px;");
+            curiositySpeaks.setStyle("-fx-opacity: 1");
+        }
+        else {
+            infoboxDesc.setStyle("-fx-font-size: 14px;");
+            curiositySpeaks.setStyle("-fx-opacity: 0");
+        }
     }
 
     private void setSolLabel(int sol){
@@ -144,6 +181,7 @@ public class Controller {
             solNumber.setText("0"+Integer.toString(sol));
         else
             solNumber.setText(Integer.toString(sol));
+
     }
 
     /**
@@ -155,12 +193,18 @@ public class Controller {
         solSlider.valueProperty().addListener((arg0, arg1, arg2) -> {
             setSolLabel((int) solSlider.getValue());
             currentSol = (int) solSlider.getValue();
-            try {updateCamera();} catch (SQLException e) { e.printStackTrace();}
+
+            try {
+                updateCamera();
+                infoboxUpdate();
+            } catch (SQLException e) { e.printStackTrace();} catch (IOException e) {
+                e.printStackTrace();
+            }
         });
 
         // button that play/pauses the system
         playpause.setOnAction(event -> {
-            if (playpause.getText().equals("Play")) {
+            if (playpause.getText().equals("Taking a break.")) {
                 playScheduler(true);
             } else {
                 pauseScheduler();
@@ -169,7 +213,6 @@ public class Controller {
 
         // button that move system 1 sol forward
         forwardStep.setOnAction(event -> {
-            pauseScheduler();
             try {loop();}
             catch (SQLException e) {e.printStackTrace();}
             catch (ClassNotFoundException e) {e.printStackTrace();}
@@ -177,7 +220,6 @@ public class Controller {
 
         // button that move system 1 sol back
         backwardStep.setOnAction(event -> {
-            pauseScheduler();
             currentSol = currentSol-2;
             try {
                 loop();
@@ -205,7 +247,9 @@ public class Controller {
                 String camalam = cam.getId().substring(0, cam.getId().length() - 3);
                 imgLocs.setSelectedView(camalam);
                 mainView.setText(imgLocs.getCamLabel(camalam));
-                try {updateCamera();} catch (SQLException e) {e.printStackTrace();}
+                try {updateCamera();} catch (SQLException e) {e.printStackTrace();} catch (IOException e) {
+                    e.printStackTrace();
+                }
             });
         }
 
@@ -228,6 +272,25 @@ public class Controller {
                     changeLineVisibility(tb.getId(), false);
             });
         }
+
+        mapSwitch.setOnMouseClicked(event -> {
+            if (mapGlobal.isVisible()) {
+                mapGlobal.setVisible(false);
+                mapSwitch.setImage(new Image("/mic/view/fxml/css/glob.png"));
+            }
+            else {
+                mapGlobal.setVisible(true);
+                mapSwitch.setImage(new Image("/mic/view/fxml/css/mr.png"));
+            }
+        });
+
+        infoboxDesc.addEventFilter(ScrollEvent.ANY, (x) -> {
+            pauseScheduler();
+        });
+
+        infoboxDesc.setOnMouseClicked(event ->
+            pauseScheduler()
+        );
     }
 
     private void changeLineVisibility(String line, boolean visible){
@@ -360,7 +423,7 @@ public class Controller {
         humidX.setLowerBound(0);
         humidX.setTickUnit(solSeconds);
 
-        elevChart.getYAxis().setOpacity(0);
+        tempChart.getYAxis().setOpacity(0);
         pressChart.getYAxis().setOpacity(0);
         humidChart.getYAxis().setOpacity(0);
         uvaChart.getYAxis().setOpacity(0);
@@ -381,7 +444,7 @@ public class Controller {
                 "Temperature", "UVA", "Humidity", "Elevation", "Pressure")
         );
         chooseAxisY.setTooltip(new Tooltip("Change the Y Axis"));
-        chooseAxisY.setValue("Temperature");
+        chooseAxisY.setValue("Elevation");
 
         yAxises.add(tempY);
         yAxises.add(elevY);
@@ -455,19 +518,25 @@ public class Controller {
      * Resumes application from paused
      */
     private void playScheduler(boolean immediately) {
-        long delay = 3000L;
+        int delay = 5000;
 
         // for restarting scheduler quickly when changing sol/pressing play
         if (immediately)
-            delay = 500L;
+            delay = 500;
 
         future = execService.scheduleAtFixedRate(()->{
-            if (currentSol<=1500)
+            if (currentSol<=1500) {
+                if (firstTime) {
+                    mapGlobal.setVisible(false);
+                    mapSwitch.setImage(new Image("/mic/view/fxml/css/glob.png"));
+                    firstTime = false;
+                }
                 try { loop();}
                 catch (SQLException e) {e.printStackTrace();}
-                catch (ClassNotFoundException e) {e.printStackTrace();}
-        }, delay, 1000L, TimeUnit.MILLISECONDS);
-        playpause.setText("Pause");
+                catch (ClassNotFoundException e) {e.printStackTrace();}}
+        }, delay, 2000, TimeUnit.MILLISECONDS);
+        playpause.setText("Currently Exploring...");
+        playpause.setStyle("-fx-background-color:#2e7d32;");
 
     }
 
@@ -476,35 +545,44 @@ public class Controller {
      */
     private void pauseScheduler() {
         future.cancel(true);
-        playpause.setText("Play");
+        playpause.setText("Taking a break.");
+        playpause.setStyle("-fx-background-color:red;");
     }
 
     /**
      * Called each "round" to update image views with images relative to sol
      */
-    private void updateCamera() throws SQLException {
+    private void updateCamera() throws SQLException, IOException {
+
+        File main = new File(imgLocs.getSelectedView() + currentSol + ".jpg");
+
         // update main view with whatever is selected
-        if (new File(imgLocs.getSelectedView() + currentSol + ".jpg").isFile()) {
+        if (new File(main.getAbsolutePath()).isFile()) {
             MAINVIEW.setOpacity(1);
-            MAINVIEW.setImage(new Image("file:" + imgLocs.getSelectedView() + currentSol + ".jpg"));
+            MAINVIEW.setImage(new Image("file:"+main.getAbsolutePath()));
+            outdatedLabel.setVisible(false);
         }
         else {
+            outdatedLabel.setVisible(true);
             MAINVIEW.setOpacity(0.75);
         }
 
         // update each thumbnail view
         for (ImageView currCam : cameras) {
-            if (new File(imgLocs.getCamera(currCam.getId()) + "\\" + currentSol + ".jpg").isFile()) {
+            File curr = new File(imgLocs.getCamera(currCam.getId()) + currentSol + ".jpg");
+            //System.out.println(imgLocs.getCamera(currCam.getId())+ currentSol + ".jpg");
+            if (new File(curr.getAbsolutePath()).isFile()) {
                 currCam.setOpacity(1);
-                currCam.setImage(new Image("file:"+imgLocs.getCamera(currCam.getId())+"\\" + currentSol + ".jpg"));
+                currCam.setImage(new Image("file:" + curr.getAbsolutePath()));
             }
             else {currCam.setOpacity(0.75);}
         }
 
         // update curated thumbnail
-        if (new File(imgLocs.getCurated()+currentSol+".jpg").isFile()) {
+        File curated = new File (imgLocs.getCurated()+currentSol+".jpg");
+        if (new File(curated.getAbsolutePath()).isFile()) {
             CURATED_th.setOpacity(1);
-            CURATED_th.setImage(new Image ("file:"+imgLocs.getCurated()+currentSol+".jpg"));
+            CURATED_th.setImage(new Image ("file:"+curated.getAbsolutePath()));
         }
         else
             CURATED_th.setOpacity(0.75);

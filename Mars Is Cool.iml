@@ -11,5 +11,15 @@
     <orderEntry type="library" name="json-20160810 (2)" level="project" />
     <orderEntry type="library" name="jsoup-1.10.2" level="project" />
     <orderEntry type="library" name="commons-io-2.5" level="project" />
+    <orderEntry type="module-library">
+      <library name="JUnit5">
+        <CLASSES>
+          <root url="jar://$APPLICATION_HOME_DIR$/plugins/junit/lib/junit-jupiter-api-5.0.0-M3.jar!/" />
+          <root url="jar://$APPLICATION_HOME_DIR$/plugins/junit/lib/opentest4j-1.0.0-M1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
   </component>
 </module>

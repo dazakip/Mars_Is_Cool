@@ -16,6 +16,9 @@
 			  color: #333;
 			  font: 11px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
 			}
+			.ol-attribution {
+				display: none;
+			}
 		</style><link rel="stylesheet" href="https://openlayers.org/en/v4.0.1/css/ol.css" type="text/css">
     <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
     <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
@@ -52,7 +55,6 @@
 			//setting up layer for gale crater image
 			var imageLayer =  new ol.layer.Image({
 				source: new ol.source.ImageStatic({
-					attributions: '© <a href="https://astrogeology.usgs.gov/search/map/Mars/MarsScienceLaboratory/Mosaics/MSL_Gale_Orthophoto_Mosaic_10m_v3">USGS</a>',
 					url: 'mic.jpg',
 					projection: projection,
 					imageExtent: extent
@@ -69,7 +71,7 @@
 				}),
 				style: new ol.style.Style({
 							stroke: new ol.style.Stroke({
-								color: 'yellow',
+								color: '#ffff19 ',
 								width: 1
 							})
 						})
@@ -93,7 +95,6 @@
 			//add control that shows the coordinate that the mouse is pointed at
 			map.addControl(new ol.control.MousePosition());
 			var currentRoverPath;
-			
 			/*	function to display a vector layer on top of the fullRoverPath
 			**	with where it is currently on it's route
 			*/
@@ -108,11 +109,11 @@
 					}),
 					style: function(feature, res){
 						// for all sols so far, add their lines to the single vector layer
-						for (i = 0; i <= currentSol; i++) { 
+						for (i = 0; i <= currentSol; i++) {
 							if(feature.get("name") == i){
 								return new ol.style.Style({
 									stroke: new ol.style.Stroke({
-										color: 'red',
+										color: '#FF3232',
 										width: 2
 									})
 								});
@@ -127,25 +128,38 @@
 				view.animate({center: [137.44442539100467, -4.59182358630241]},{zoom: 6},{duration: 250});
 			}
 			
+			var roverLayer;
 			// test to add marker to map from JavaFX
-			function addMarker() {
-
+			function addMarker(front) {
+			map.removeLayer(roverLayer);
+				console.log("------");
+				console.log(front);
 				var iconFeature = new ol.Feature({
 				  geometry: new ol.geom.Point([137.44442539100467, -4.59182358630241]),
-				  name: 'Null Island',
-				  population: 4000,
-				  rainfall: 500
+				  name: 'Curiosity'
 				});
 
 				var vectorSource = new ol.source.Vector({
 				  features: [iconFeature] //add an array of features
 				});
 				
-				var vectorLayer = new ol.layer.Vector({
-				  source: vectorSource
+				var iconStyle = new ol.style.Style({
+					image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+					anchorXUnits: 'fraction',
+					anchorYUnits: 'pixels',
+					opacity: 0.75,
+					src: 'mr2.png'
+					}))
 				});
 				
-				map.addLayer(vectorLayer);
+				roverLayer = new ol.layer.Vector({
+					source: vectorSource,
+					style: iconStyle
+				});
+				
+				
+				
+				map.addLayer(roverLayer);
 			}
 		</script>
 	</body>

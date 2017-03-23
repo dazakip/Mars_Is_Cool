@@ -17,7 +17,7 @@ public class CuriosityDatabase {
 
     public CuriosityDatabase() throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
-        c = DriverManager.getConnection("jdbc:sqlite:CuriosityData.db");
+        c = DriverManager.getConnection("jdbc:sqlite:resources/CuriosityData.db");
         c.setAutoCommit(false);
         nooll = 11111;
         dataEntries = new ArrayList<>();

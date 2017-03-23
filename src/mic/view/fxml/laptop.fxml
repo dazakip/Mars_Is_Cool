@@ -7,7 +7,6 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ButtonBar?>
 <?import javafx.scene.control.ChoiceBox?>
-<?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.TextArea?>
@@ -35,7 +34,8 @@
           <RowConstraints maxHeight="339.0" minHeight="339.0" prefHeight="339.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <WebView fx:id="map" cache="true" maxHeight="339.0" maxWidth="344.0" minHeight="339.0" minWidth="344.0" prefHeight="339.0" prefWidth="344.0" GridPane.columnIndex="1" />
+            <WebView fx:id="mapGale" cache="true" maxHeight="339.0" maxWidth="344.0" minHeight="339.0" minWidth="344.0" prefHeight="339.0" prefWidth="344.0" GridPane.columnIndex="1" />
+            <WebView fx:id="mapGlobal" cache="true" layoutX="349.0" layoutY="10.0" maxHeight="339.0" maxWidth="344.0" minHeight="339.0" minWidth="344.0" prefHeight="339.0" prefWidth="344.0" GridPane.columnIndex="1" />
             <GridPane maxHeight="339.0" maxWidth="339.0" minHeight="339.0" minWidth="339.0" prefHeight="339.0" prefWidth="339.0">
               <columnConstraints>
                   <ColumnConstraints hgrow="SOMETIMES" maxWidth="113.0" minWidth="113.0" prefWidth="113.0" />
@@ -137,17 +137,10 @@
       <Label fx:id="mainView" styleClass="mainCamLabel" text="Curated View" />
       <Pane layoutY="683.0" maxHeight="85.0" maxWidth="1366.0" minHeight="85.0" minWidth="1366.0" prefHeight="85.0" prefWidth="1366.0">
          <children>
-            <Slider fx:id="solSlider" blockIncrement="100.0" layoutX="693.0" layoutY="50.0" majorTickUnit="100.0" max="1500.0" maxHeight="35.0" maxWidth="1300.0" minHeight="20.0" minWidth="648.0" minorTickCount="5" prefHeight="35.0" prefWidth="661.0" showTickLabels="true" showTickMarks="true" snapToTicks="true">
+            <Slider fx:id="solSlider" blockIncrement="100.0" layoutX="689.0" layoutY="7.0" majorTickUnit="100.0" max="1500.0" maxHeight="35.0" maxWidth="1300.0" minHeight="20.0" minWidth="648.0" minorTickCount="5" prefHeight="35.0" prefWidth="664.0" showTickLabels="true" showTickMarks="true" snapToTicks="true">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor></Slider>
-            <ButtonBar layoutX="683.0" layoutY="5.0" prefHeight="2.0" prefWidth="164.0">
-               <buttons>
-                  <Button fx:id="backwardStep" maxHeight="50.0" maxWidth="160.0" minHeight="17.0" minWidth="36.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="58.0" text="&lt;&lt; " />
-                  <Button fx:id="playpause" maxHeight="50.0" maxWidth="160.0" minHeight="6.0" minWidth="72.0" mnemonicParsing="false" prefHeight="6.0" prefWidth="72.0" text="Pause" />
-                  <Button fx:id="forwardStep" maxHeight="50.0" maxWidth="160.0" minHeight="30.0" minWidth="38.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="54.0" text="&gt;&gt; " />
-               </buttons>
-            </ButtonBar>
             <Label fx:id="solNumber" layoutX="10.0" maxHeight="80.0" minHeight="51.0" prefHeight="85.0" prefWidth="150.0" text="0000" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="65.0" />
@@ -156,19 +149,32 @@
                   <Insets top="-5.0" />
                </padding>
             </Label>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="85.0" layoutX="168.0" stroke="#e8d99e00" strokeMiterLimit="0.0" strokeWidth="1.5" styleClass="infoBox" width="514.0" />
-            <Label layoutX="181.0" layoutY="3.0" prefHeight="21.0" prefWidth="9.0" text="i" textAlignment="CENTER" textFill="WHITE">
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="DODGERBLUE" height="85.0" layoutX="174.0" stroke="#e8d99e00" strokeMiterLimit="0.0" strokeWidth="1.5" styleClass="infoBox" width="509.0" />
+            <TextArea fx:id="infoboxDesc" layoutX="172.0" prefHeight="85.0" prefWidth="509.0" styleClass="textArea" text="Landing in progress...." wrapText="true">
                <font>
-                  <Font name="Impact" size="34.0" />
-               </font>
-            </Label>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#ffffff00" height="44.0" layoutX="167.0" layoutY="2.0" stroke="BLACK" strokeType="INSIDE" styleClass="infoIcon" width="36.0" />
-            <TextArea layoutX="204.0" layoutY="6.0" prefHeight="72.0" prefWidth="476.0" promptText="This is where interesting information regarding the current sol will pop up - or will be used to communicate info to user" styleClass="textArea">
-               <font>
-                  <Font size="16.0" />
+                  <Font size="43.0" />
                </font>
             </TextArea>
-            <Hyperlink layoutX="608.0" layoutY="59.0" text="Learn More" />
+            <Button fx:id="backwardStep" layoutX="982.0" layoutY="47.0" maxHeight="35.0" maxWidth="160.0" minHeight="30.0" minWidth="34.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="109.0" styleClass="backforward" text="Go Back">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button fx:id="playpause" layoutX="698.0" layoutY="44.0" maxHeight="50.0" maxWidth="277.0" minHeight="6.0" minWidth="72.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="277.0" styleClass="pp" stylesheets="@css/stylesheet.css" text="Currently Exploring...">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <Button fx:id="forwardStep" layoutX="1097.0" layoutY="47.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="148.0" styleClass="backforward" stylesheets="@css/stylesheet.css" text="Go Forward">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </Button>
+            <ImageView fx:id="curiositySpeaks" fitHeight="64.0" fitWidth="64.0" layoutX="608.0" layoutY="15.0" pickOnBounds="true" preserveRatio="true" style="-fx-opacity: 0;">
+               <image>
+                  <Image url="@css/mars-rover.png" />
+               </image>
+            </ImageView>
          </children>
       </Pane>
       <StackPane layoutX="683.0" layoutY="40.0" maxHeight="310.0" maxWidth="683.0" minHeight="310.0" minWidth="683.0" prefHeight="310.0" prefWidth="683.0">
@@ -321,5 +327,14 @@
             <Label fx:id="yAxisLabel" alignment="CENTER" contentDisplay="CENTER" layoutX="-110.0" layoutY="175.0" prefHeight="23.0" prefWidth="240.0" styleClass="yAxisChart" text="Celsius (°C)" textAlignment="CENTER" />
          </children>
       </Pane>
+      <ImageView fx:id="mapSwitch" fitHeight="32.0" fitWidth="32.0" layoutX="6.0" layoutY="39.0" pickOnBounds="true" preserveRatio="true" styleClass="mapSwitcher" x="1023.0" y="607.0">
+         <image>
+            <Image url="@css/mr.png" />
+         </image>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </ImageView>
+      <Label fx:id="outdatedLabel" layoutX="513.0" layoutY="665.0" styleClass="outdatedLabel" text="no image for current sol" />
    </children>
 </AnchorPane>

@@ -1,3 +1,35 @@
+.outdatedLabel {
+	-fx-background-color: #262626;
+	-fx-padding: -2 5 -2 5;
+	-fx-font-family: Futura, "Trebuchet MS", Arial, sans-serif;
+	-fx-font-size: 15px;
+	-fx-text-fill: white;
+	-fx-opacity: 0.5;
+	
+}
+
+.mapSwitcher {
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 6,0,3,3 );
+}
+
+.pp{
+    -fx-background-color:#2e7d32;
+	-fx-text-fill: white;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 5,0,0,0 );
+    -fx-font-weight: bold;
+    -fx-font-size: 2em;
+	-fx-padding: -10;
+}
+
+.backforward{
+    -fx-background-color:#015493;
+	-fx-text-fill: white;
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 5,0,0,0 );
+    -fx-font-weight: bold;
+    -fx-font-size: 2em;
+	-fx-padding: -10;
+}
+
 .slider .thumb{
     -fx-background-color: rgb(60,60,60);
     -fx-border-radius: 100;
@@ -27,12 +59,14 @@
 .infoIcon {
 	-fx-arc-height:5;	 
 	-fx-arc-width:5;
-	-fx-stroke-width: 1;
+	-fx-stroke-width: 1.5;
 	-fx-stroke: white;
 }
 
 .text-area {
     -fx-background-color: transparent;
+	-fx-text-fill: grey;
+	-fx-border-color: white;
 }
 
 .text-area-with-margin {

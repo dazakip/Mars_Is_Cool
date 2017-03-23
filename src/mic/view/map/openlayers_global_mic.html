@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>mars is wicked cool</title>
+		<meta http-equiv="imagetoolbar" content="no"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<style type="text/css">
+			html, body { margin:0; padding: 0; height: 100%; width: 100%; }
+			body { width:100%; height:100%; background: #ffffff; }
+			#map { position: absolute; height: 100%; width: 100%; background-color: #FFFFFF; }
+			.ol-mouse-position {
+			  background-color: rgba(255, 255, 255, 0.7);
+			  box-shadow: 0 0 5px #bbb;
+			  padding: 0 5px;
+			  margin:0;
+			  color: #333;
+			  font: 11px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+			}
+			#location {
+			  background-color: rgba(255, 255, 255, 0.7);
+			  box-shadow: 0 0 5px #bbb;
+			  padding: 0 5px;
+			  margin:0;
+			  color: #333;
+			  font: 11px/1.5 "Helvetica Neue", Arial, Helvetica, sans-serif;
+			  z-index: 10;
+			  position: absolute;
+			  right: 0;
+			  bottom: 0;
+			}
+			.ol-attribution {
+				display: none;
+			}
+		</style><link rel="stylesheet" href="https://openlayers.org/en/v4.0.1/css/ol.css" type="text/css">
+    <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+    <script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+    <script src="https://openlayers.org/en/v4.0.1/build/ol.js"></script>
+		<script type="text/javascript" src="global_data.js"></script>
+	</head>
+	<body>
+		<div id="map">
+		<div id ="location"></div></div>
+		<div id ="mouseCoord"></div>
+		<script type="text/javascript">
+			//following block of code makes map actually appear in JavaFX WebView 
+			//https://stackoverflow.com/questions/40483446/openlayers-v3-19-1-doesnt-show-in-javafx-webview/40485118#40485118
+			/****************************************************/
+			window.requestAnimFrame = (function(){
+				return window.requestAnimationFrame ||
+				window.webkitRequestAnimationFrame ||
+				window.mozRequestAnimationFrame ||
+				window.oRequestAnimationFrame ||
+				window.msRequestAnimationFrame ||
+				function(callback, element) {
+					window.setTimeout(callback, 1000 / 60);
+				};
+			})();
+			var requestAnimationFrame = window.requestAnimFrame;
+			/****************************************************/
+			
+			//setting the extent/projection of the map
+			var extent = [-180, -90, 180, 90];
+			var projection = new ol.proj.Projection({
+				code: 'HiRise',
+				units: 'pixels',
+				extent: extent
+			});
+			
+			//setting up layer for gale crater image
+			var imageLayer =  new ol.layer.Image({
+				source: new ol.source.ImageStatic({
+					url: 'global_mic.jpg',
+					projection: projection,
+					imageExtent: extent
+				})
+			})
+			
+			var view = new ol.View({
+				projection: projection,
+				center: [0, 0],
+				zoom: 2,
+				minZoom: 2,
+				maxZoom: 5
+			});
+			
+			//RECTANGLE FOR GALECRATER 
+			var galecrater = galedata;
+			var galeRectangle = new ol.layer.Vector({
+				source: new ol.source.Vector({
+					features: (new ol.format.GeoJSON()).readFeatures(galecrater)
+				})
+			});
+			
+			//MARKERS FOR EACH SPACECRAFT
+			var spacecraft = spacecraftdata;
+			var spacecraftMarkers = new ol.layer.Vector({
+				source: new ol.source.Vector({
+					features: (new ol.format.GeoJSON()).readFeatures(spacecraft)
+				}),
+				style: new ol.style.Style({
+					 image: new ol.style.Circle({
+					   fill: new ol.style.Fill({
+							   color: 'rgba(255,255,0,0.9)'
+							 }),
+					   radius: 4
+					 })
+				   })
+			});
+			
+			//setting up actual map with image and full rover layer
+			var map = new ol.Map({
+				layers: [imageLayer, galeRectangle, spacecraftMarkers],
+				target: 'map',
+				view: view
+			});
+			
+			var features=[];
+			populateFeatureArray();
+			
+			
+			function panToCuriosity(){
+				view.animate({center: [137.44442539100467, -4.59182358630241]},{zoom: 7});
+			}
+			
+			function mousePosition() {
+				console.log(document.getElementById(".ol-mouse-position"));
+			}
+			
+			function populateFeatureArray() {
+				for (i = 0; i < 11; i++) { 
+					features.push([spacecraftdata.features[i].geometry.coordinates, spacecraftdata.features[i].properties.name]);
+				}
+			}
+			
+			//add control that shows the coordinate that the mouse is pointed at
+			map.addControl(new ol.control.MousePosition({
+				coordinateFormat: function(coordinate) {
+					
+					var name = "";
+					for (i = 0; i < 11; i++) {
+						if ( 
+						((coordinate[0] <= (features[i][0][0])) &&  (coordinate[0] >= (features[i][0][0]-2))) && ((coordinate[1] >= (features[i][0][1])) && (coordinate[1] <= (features[i][0][1]+2))) ||
+						((coordinate[0] <= (features[i][0][0]+2)) &&  (coordinate[0] >= (features[i][0][0]))) && ((coordinate[1] >= (features[i][0][1]-2)) && (coordinate[1] <= (features[i][0][1]))) ||
+						((coordinate[0] >= (features[i][0][0]-2)) &&  (coordinate[0] <= (features[i][0][0]))) && ((coordinate[1] >= (features[i][0][1]-2)) && (coordinate[1] <= (features[i][0][1]))) ||
+						((coordinate[0] >= (features[i][0][0])) &&  (coordinate[0] <= (features[i][0][0]+2))) && ((coordinate[1] >= (features[i][0][1]-2)) && (coordinate[1] <= (features[i][0][1])))
+							) {
+							
+								name = features[i][1];
+						}
+					} 
+					
+					document.getElementById("location").innerHTML = name;
+					return coordinate;
+					
+				},
+				target: document.getElementById('mouseCoord')
+			}));
+			
+			
+			
+		</script>
+	</body>
+</html>
